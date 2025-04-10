@@ -59,4 +59,48 @@
             WHERE
                 user_idx = #{id}
         </select>
+
+        <!--  selectMembers  -->
+        <select id="selectMembers" resultType="com.siat.post.domain.member.Member">
+            SELECT
+            user_idx,
+            user_id,
+            user_password,
+            user_name,
+            user_email,
+            user_nickname,
+            grade,
+            user_point,
+            user_thumbnail_file_url,
+            profile_description,
+            reg_date,
+            update_date,
+            is_delete
+            FROM
+            member
+        </select>
+
+        <!--  updateMember  -->
+        <update id="updateMember" parameterType="com.siat.post.domain.member.Member">
+            UPDATE member
+            <set>
+                <if test="userId != null and userId != ''">user_id = #{userId},</if>
+                <if test="userPassword != null and userPassword != ''">user_password = #{userPassword},</if>
+                <if test="userName != null and userName != ''">user_name = #{userName},</if>
+                <if test="userEmail != null and userEmail != ''">user_email = #{userEmail},</if>
+                <if test="userNickname != null and userNickname != ''">user_nickname = #{userNickname},</if>
+                <if test="grade != null and grade != ''">grade = #{grade},</if>
+                <if test="userPoint != null">user_point = #{userPoint},</if>
+                <if test="userThumbnailFileUrl != null and userThumbnailFileUrl != ''">user_thumbnail_file_url = #{userThumbnailFileUrl},</if>
+                <if test="profileDescription != null and profileDescription != ''">profile_description = #{profileDescription},</if>
+                update_date = CURRENT_TIMESTAMP
+            </set>
+            WHERE user_idx = #{userIdx}
+        </update>
+
+        <!--  deleteMember  -->
+        <delete id="deleteMember" parameterType="int">
+            DELETE FROM member
+            WHERE user_idx = #{id}
+        </delete>
     </mapper>
