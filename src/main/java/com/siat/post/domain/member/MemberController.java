@@ -28,12 +28,6 @@ public class MemberController {
 //        }
 
         @Operation(summary = "회원 정보 조회", description = "ID를 통해 특정 회원의 정보를 조회합니다.")
-        @ApiResponses(value = {
-                @ApiResponse(responseCode = "200", description = "성공",
-                        content = @Content(schema = @Schema(implementation = MemberSelectResponseDto.class))),
-                @ApiResponse(responseCode = "404", description = "회원을 찾을 수 없음",
-                        content = @Content(schema = @Schema(type = "string")))
-        })
         @GetMapping("/select")
         public ResponseEntity<MemberSelectResponseDto> selectMember(@RequestParam("id") int id, Model model) throws Exception{
             model.addAttribute("id", id);
@@ -41,14 +35,6 @@ public class MemberController {
         }
 
         @Operation(summary = "회원 등록", description = "새로운 회원을 등록합니다.")
-        @ApiResponses(value = {
-                @ApiResponse(responseCode = "200", description = "회원 등록 성공",
-                        content = @Content(schema = @Schema(type = "string"))),
-                @ApiResponse(responseCode = "400", description = "잘못된 요청",
-                        content = @Content(schema = @Schema(type = "string"))),
-                @ApiResponse(responseCode = "500", description = "서버 오류",
-                        content = @Content(schema = @Schema(type = "string")))
-        })
         @PostMapping("/insert")
         public ResponseEntity<String> insertMember(@RequestBody MemberInsertRequestDto requestDto,
                                                    BindingResult bindingResult,
