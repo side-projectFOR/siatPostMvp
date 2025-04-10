@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+    <mapper namespace="com.siat.post.domain.member.MemberMapper">
+        <!--   insertMember     -->
+        <insert id="insertMember" parameterType="com.siat.post.domain.member.Member"
+            useGeneratedKeys="true" keyProperty="userIdx" keyColumn="user_idx">
+        INSERT INTO member (
+                user_id,
+                user_password,
+                user_name,
+                user_email,
+                user_nickname,
+                grade,
+                user_point,
+                user_thumbnail_file_url,
+                profile_description,
+                reg_date,
+                update_date,
+                is_delete
+            )
+            VALUES
+            (
+                #{userId},
+                #{userPassword},
+                #{userName},
+                #{userEmail},
+                #{userNickname},
+                #{grade},
+                #{userPoint},
+                #{userThumbnailFileUrl},
+                #{profileDescription},
+                #{regDate},
+                #{updateDate},
+                #{isDelete}
+            )
+        </insert>
+
+    </mapper>
