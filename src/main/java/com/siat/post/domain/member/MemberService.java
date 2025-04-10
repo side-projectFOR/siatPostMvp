@@ -1,6 +1,7 @@
 package com.siat.post.domain.member;
 
 import com.siat.post.domain.member.dto.MemberInsertRequestDto;
+import com.siat.post.domain.member.dto.MemberSelectResponseDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -12,5 +13,9 @@ public class MemberService {
     public void insertMember(MemberInsertRequestDto requestDto) throws Exception{
         Member member = requestDto.toEntity();
         memberMapper.insertMember(member);
+    }
+
+    public MemberSelectResponseDto selectMember(int id) {
+        return memberMapper.selectMember(id).toDto();
     }
 }

@@ -1,5 +1,6 @@
 package com.siat.post.domain.member;
 
+import com.siat.post.domain.member.dto.MemberSelectResponseDto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -24,5 +25,19 @@ public class Member {
     private LocalDateTime updateDate;
     private Integer isDelete;
 
+    public MemberSelectResponseDto toDto() {
+        return MemberSelectResponseDto.builder()
+                .userId(this.userId)
+                .userName(this.userName)
+                .userEmail(this.userEmail)
+                .userNickname(this.userNickname)
+                .grade(this.grade)
+                .userPoint(this.userPoint)
+                .userThumbnailFileUrl(this.userThumbnailFileUrl)
+                .profileDescription(this.profileDescription)
+                .regDate(this.regDate)
+                .updateDate(this.updateDate)
+                .build();
+    }
 
 }

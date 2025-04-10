@@ -1,6 +1,7 @@
 package com.siat.post.domain.member;
 
 import com.siat.post.domain.member.dto.MemberInsertRequestDto;
+import com.siat.post.domain.member.dto.MemberSelectResponseDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -18,10 +19,10 @@ public class MemberController {
 //        public String selectMembers(Model model) throws Exception{
 //            return "index.html";
 //        }
-
         @GetMapping("/select")
-        public String selectMember(@RequestParam("id") int id, Model model) throws Exception{
-            return "index.html";
+        public ResponseEntity<MemberSelectResponseDto> selectMember(@RequestParam("id") int id, Model model) throws Exception{
+            model.addAttribute("id", id);
+            return ResponseEntity.ok(memberService.selectMember(id));
         }
 
         @PostMapping("/insert")
@@ -36,5 +37,4 @@ public class MemberController {
 
             return ResponseEntity.ok("회원 등록이 성공적으로 완료되었습니다.");
         }
-
 }
