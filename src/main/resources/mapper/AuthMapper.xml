@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.siat.post.auth.AuthMapper">
+    <!--  findByUserId  -->
+    <select id="findByUserId" parameterType="String" resultType="com.siat.post.domain.member.Member">
+        SELECT
+            user_idx,
+            user_id,
+            user_password,
+            user_name,
+            user_email,
+            user_nickname,
+            grade,
+            user_point,
+            user_thumbnail_file_url,
+            profile_description,
+            reg_date,
+            update_date,
+            is_delete
+        FROM
+            member
+        WHERE
+            user_id = #{id}
+    </select>
+</mapper>
