@@ -12,22 +12,18 @@ import lombok.ToString;
 @Setter
 @ToString
 public class Post {
-    private long postIdx;
-    private int boardIdx;
+    private Long postIdx;
+    private Integer boardIdx;
     private Integer userIdx;
     private String postAuthor;
     private String postTitle;
     private String postContent;
     private int hit;
-    private boolean isSecret;
+    private Boolean isSecret;
     private String postPassword;
     private LocalDateTime regDate;
     private LocalDateTime updateDate;
-    private boolean isDelete;
-
-    public int getIsSecrect(){
-        return isSecret?1:0;
-    }
+    private Boolean isDelete;
 
     public PostResponseDto toDto() {
         return PostResponseDto.builder()

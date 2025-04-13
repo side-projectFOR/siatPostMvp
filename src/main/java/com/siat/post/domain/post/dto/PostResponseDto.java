@@ -10,15 +10,15 @@ import lombok.ToString;
 @Getter
 @ToString
 public class PostResponseDto {
-    private long postIdx;
-    private int boardIdx;
+    private Long postIdx;
+    private Integer boardIdx;
     private Integer userIdx;
     private String postAuthor;
     private String postTitle;
     private String postContent;
     private int hit;
-    private boolean isSecret;
+    private Boolean isSecret;
     private LocalDateTime regDate;
     private LocalDateTime updateDate;
-    private boolean isDelete;
+    private Boolean isDelete;
 }

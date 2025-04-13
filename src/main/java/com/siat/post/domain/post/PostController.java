@@ -1,5 +1,7 @@
 package com.siat.post.domain.post;
 
+import java.util.List;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -13,6 +15,7 @@ import com.siat.post.domain.post.dto.PostRequestDto;
 import com.siat.post.domain.post.dto.PostResponseDto;
 import com.siat.post.domain.post.dto.PostUpdateRequestDto;
 
+import ch.qos.logback.core.util.StringUtil;
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.web.bind.annotation.PostMapping;
@@ -25,13 +28,40 @@ import org.springframework.web.bind.annotation.PathVariable;
 
 @Controller
 @RequiredArgsConstructor
-@RequestMapping("/post")
+@RequestMapping("/{boardSlug}/posts")
 public class PostController {
     private final PostService postService;
     
+    // @GetMapping("")
+    // public @ResponseBody ResponseEntity<List<PostResponseDto>> selectPosts() throws Exception {
+    //     List<PostResponseDto> postList = postService.s();
+
+    //     if (postList != null) {
+    //         return ResponseEntity.ok().body(postList);
+
+    //     } else {
+    //         return ResponseEntity.badRequest().build();
+    //     }
+    // }
+    @GetMapping
+    public @ResponseBody ResponseEntity<List<PostResponseDto>> selectPostsByBoard(@PathVariable String boardSlug) throws Exception {
+        if (StringUtil.isNullOrEmpty(boardSlug)) {
+            return ResponseEntity.badRequest().build();
+        }
+        List<PostResponseDto> postList = postService.selectPostsByBoard(boardSlug);
+
+        if (postList != null) {
+            return ResponseEntity.ok().body(postList);
+
+        } else {
+            return ResponseEntity.badRequest().build();
+        }
+    }
+
     @GetMapping("/{postIdx}")
-    public @ResponseBody ResponseEntity<PostResponseDto> slectPost(@PathVariable long postIdx) throws Exception {
-        PostResponseDto postInfo =postService.selectPost(postIdx);
+    public @ResponseBody ResponseEntity<PostResponseDto> selectPost(@PathVariable Long postIdx) throws Exception {
+        PostResponseDto postInfo = postService.selectPost(postIdx);
+        
         if(postInfo!=null){
             return ResponseEntity.ok().body(postInfo);
 
@@ -50,7 +80,7 @@ public class PostController {
         }
     }
     @PutMapping("/{postIdx}")
-    public @ResponseBody ResponseEntity<String> updatePost(@PathVariable long postIdx, @RequestBody PostUpdateRequestDto postUpdateRequest) throws Exception {
+    public @ResponseBody ResponseEntity<String> updatePost(@PathVariable Long postIdx, @RequestBody PostUpdateRequestDto postUpdateRequest) throws Exception {
         int result=postService.updatePost(postIdx,postUpdateRequest);
         if(result>0){
             return ResponseEntity.ok().body("수정성공");
@@ -60,8 +90,8 @@ public class PostController {
         }
     }
     @DeleteMapping("/{postIdx}")
-    public @ResponseBody ResponseEntity<String> deletePost(@PathVariable long postIdx) throws Exception{
-        int result=postService.updatePostDelete(postIdx, true);
+    public @ResponseBody ResponseEntity<String> deletePost(@PathVariable Long postIdx) throws Exception {
+        int result=postService.softDeltePost(postIdx);
         if(result>0){
             return ResponseEntity.ok().body("삭제성공");
 

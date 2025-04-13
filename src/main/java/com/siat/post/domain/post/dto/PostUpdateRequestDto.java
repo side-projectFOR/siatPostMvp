@@ -10,13 +10,13 @@ import lombok.ToString;
 @Getter
 @ToString
 public class PostUpdateRequestDto {
-    private int boardIdx;
+    private Integer boardIdx;
     private String postAuthor;
     private String postTitle;
     private String postContent;
     private int hit;
-    private boolean isSecret;
+    private Boolean isSecret;
     private String postPassword;
     private LocalDateTime updateDate;
-    private boolean isDelete;
+    private Boolean isDelete;
 }

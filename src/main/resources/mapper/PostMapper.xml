@@ -3,7 +3,7 @@
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.siat.post.domain.post.PostMapper">
-  <select id="selectPost" parameterType="long">
+  <select id="selectPost" parameterType="Long">
     select 
       post_idx 
       ,board_idx
@@ -12,12 +12,13 @@
       ,post_title
       ,post_content
       ,hit
-      ,is_secrect
+      ,is_secret
+      ,post_password
       ,reg_date
       ,update_date
       ,is_delete
     from post
-    where post_idx = #{id}
+    where post_idx = #{id} and is_delete = 0
   </select>
   <select id="selectPosts" resultType="com.siat.post.domain.post.dto.Post">
     select 
@@ -28,31 +29,50 @@
       ,post_title
       ,post_content
       ,hit
-      ,is_secrect
+      ,is_secret
+      ,post_password
       ,reg_date
       ,update_date
       ,is_delete
-    from post
+    from post 
+    where is_delete = 0
   </select>
-  <insert id="insertPost" parameterType="com.siat.post.domain.post.dto.Post" useGeneratedKeys="true" keyProperty="postIdx" keyColumn="post_idx">
-    insert into post( post_idx 
+  <select id="selectPostsByBoard" parameterType="String" resultType="com.siat.post.domain.post.dto.Post">
+    select 
+      post_idx 
       ,board_idx
       ,user_idx
       ,post_author
       ,post_title
       ,post_content
       ,hit
-      ,is_secrect
-      ,postPassword)
+      ,is_secret
+      ,post_password
+      ,reg_date
+      ,update_date
+      ,is_delete
+    from post 
+    where is_delete = 0 
+    and board_idx in (select board_idx from board where board_slug=#{id})
+  </select>
+  <insert id="insertPost" parameterType="com.siat.post.domain.post.dto.Post" useGeneratedKeys="true" keyProperty="postIdx" keyColumn="post_idx">
+    insert into post(  
+      board_idx
+      ,user_idx
+      ,post_author
+      ,post_title
+      ,post_content
+      ,hit
+      ,is_secret
+      ,post_password)
     values(
-      #{postIdx} 
-      ,#{boardIdx}
+      #{boardIdx}
       ,#{userIdx}
       ,#{postAuthor}
       ,#{postTitle}
       ,#{postContent}
       ,#{hit}
-      ,#{isSecrect}
+      ,#{isSecret}
       ,#{postPassword}
       )
   </insert>
@@ -84,13 +104,9 @@
     </set>
     where post_idx = #{postIdx}
   </update>
-  <update id="updatePostDelete" parameterType="com.siat.post.domain.post.dto.PostDeleteRequestDto">
-    update post
-      <set>
-          <if test="isDelete != null">
-            is_delete = #{isDelete},
-          </if>
-      </set>
-      where post_idx = #{postIdx}
+  <update id="softDeletePost" parameterType="Long">
+    update post 
+      is_delete = 1,
+    where post_idx = #{postIdx}
   </update>
 </mapper>

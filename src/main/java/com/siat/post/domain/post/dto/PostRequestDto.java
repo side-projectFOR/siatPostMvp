@@ -14,15 +14,12 @@ import lombok.ToString;
 @NoArgsConstructor
 @AllArgsConstructor
 public class PostRequestDto {
-    private int boardIdx;
+    private Integer boardIdx;
     private Integer userIdx;
     private String postAuthor;
     private String postTitle;
     private String postContent;
     private String postPassword;
-    private boolean isSecret;
+    private Boolean isSecret;
     
-    public int getIsSecrect(){
-        return isSecret?1:0;
-    }
 }

@@ -6,7 +6,6 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 
 import com.siat.post.domain.post.dto.Post;
-import com.siat.post.domain.post.dto.PostDeleteRequestDto;
 import com.siat.post.domain.post.dto.PostRequestDto;
 import com.siat.post.domain.post.dto.PostResponseDto;
 import com.siat.post.domain.post.dto.PostUpdateRequestDto;
@@ -18,13 +17,17 @@ import lombok.RequiredArgsConstructor;
 public class PostService {
     private final PostMapper postMapper;
 
-    public PostResponseDto selectPost(long postIdx) throws Exception{
+    public PostResponseDto selectPost(long postIdx) throws Exception {
         Post post = postMapper.selectPost(postIdx);
-        if(post !=null){
+        if (post != null) {
             return post.toDto();
-        }else{
+        } else {
             return null;
         }
+    }
+    public List<PostResponseDto> selectPostsByBoard(String boardSlug) throws Exception{
+        List<Post> postList = postMapper.selectPostsByBoard(boardSlug);
+        return postList.stream().map(Post::toDto).toList();
     }
     public List<PostResponseDto> selectPosts() throws Exception{
         List<Post> postList = postMapper.selectPosts();
@@ -38,7 +41,7 @@ public class PostService {
                         .postTitle(postRequest.getPostTitle())
                         .postContent(postRequest.getPostContent())
                         .postPassword(postRequest.getPostPassword())
-                        .isSecret(postRequest.isSecret())
+                        .isSecret(postRequest.getIsSecret())
                         .build();
         return  postMapper.insertPost(post);
     }
@@ -49,19 +52,17 @@ public class PostService {
                         .postTitle(postUpdateRequest.getPostTitle())
                         .postContent(postUpdateRequest.getPostContent())
                         .hit(postUpdateRequest.getHit())
-                        .isSecret(postUpdateRequest.isSecret())
+                        .isSecret(postUpdateRequest.getIsSecret())
                         .postPassword(postUpdateRequest.getPostPassword())
-                        .isDelete(postUpdateRequest.isDelete())
+                        .isDelete(postUpdateRequest.getIsDelete())
                         .updateDate(LocalDateTime.now())
                         .build();
     
         return postMapper.updatePost(post);
     }
-    public int updatePostDelete(long postIdx, boolean isDelete) throws Exception {
-        PostDeleteRequestDto postReuqest = PostDeleteRequestDto.builder()
-                                        .isDelete(isDelete)
-                                        .postIdx(postIdx)
-                                        .build();
-        return postMapper.updatePostDelete(postReuqest);
+
+    public int softDeltePost(Long postIdx) throws Exception {
+        
+        return postMapper.softDeletePost(postIdx);
     }
 }
