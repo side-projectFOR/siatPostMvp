@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.siat.post.domain.board.BoardMapper">
+
+  <select id="selectBoards" resultType="com.siat.post.domain.board.dto.BoardResponseDto">
+    SELECT 
+      board_idx,
+      board_name,
+      board_description,
+      board_slug,
+      reg_date,
+      update_date,
+      is_delete
+    FROM board
+    WHERE is_delete = 0
+  </select>
+
+  <select id="selectBoardByIdx" parameterType="Integer" resultType="com.siat.post.domain.board.dto.BoardResponseDto">
+    SELECT 
+      board_idx,
+      board_name,
+      board_description,
+      board_slug,
+      reg_date,
+      update_date,
+      is_delete
+    FROM board
+    WHERE board_idx = #{boardIdx} AND is_delete = 0
+  </select>
+
+  <select id="selectBoardBySlug" parameterType="String" resultType="com.siat.post.domain.board.dto.BoardResponseDto">
+    SELECT 
+      board_idx,
+      board_name,
+      board_description,
+      board_slug,
+      reg_date,
+      update_date,
+      is_delete
+    FROM board
+    WHERE board_slug = #{boardSlug} AND is_delete = 0
+  </select>
+
+  <insert id="insertBoard" parameterType="com.siat.post.domain.board.dto.BoardRequestDto" useGeneratedKeys="true" keyProperty="boardIdx" keyColumn="board_idx">
+    INSERT INTO board (
+      board_name,
+      board_description,
+      board_slug,
+      reg_date,
+      update_date,
+      is_delete
+    ) VALUES (
+      #{boardName},
+      #{boardDescription},
+      #{slug},
+      now(),
+      now(),
+      0
+    )
+  </insert>
+
+  <update id="updateBoardByIdx" parameterType="com.siat.post.domain.board.dto.BoardUpdateRequestDto">
+    UPDATE board
+    <set>
+      <if test="boardName != null">board_name = #{boardName},</if>
+      <if test="boardDescription != null">board_description = #{boardDescription},</if>
+      <if test="boardSlug != null">board_slug = #{boardSlug},</if>
+      update_date = now()
+    </set>
+    WHERE board_idx = #{boardIdx}
+  </update>
+
+  <update id="updateBoardBySlug" parameterType="com.siat.post.domain.board.dto.BoardUpdateRequestDto">
+    UPDATE board
+    <set>
+      <if test="boardName != null">board_name = #{boardName},</if>
+      <if test="boardDescription != null">board_description = #{boardDescription},</if>
+      <if test="boardSlug != null">board_slug = #{boardSlug},</if>
+      update_date = now()
+    </set>
+    WHERE board_idx = (SELECT board_idx FROM board WHERE board_slug = #{boardSlug})
+  </update>
+
+  <update id="softDeleteBoardByIdx" parameterType="Integer">
+    UPDATE board
+    SET is_delete = 1
+    WHERE board_idx = #{boardIdx}
+  </update>
+
+  <update id="softDeleteBoardBySlug" parameterType="String">
+    UPDATE board
+    SET is_delete = 1
+    WHERE board_idx = (SELECT board_idx FROM board WHERE board_slug = #{boardSlug})
+  </update>
+</mapper>
