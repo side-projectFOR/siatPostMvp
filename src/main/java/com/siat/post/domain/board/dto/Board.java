@@ -3,12 +3,14 @@ package com.siat.post.domain.board.dto;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
 import java.time.LocalDateTime;
 
 @Builder
 @Getter
 @Setter
+@ToString
 public class Board {
     private Integer boardIdx;
     private String boardName;

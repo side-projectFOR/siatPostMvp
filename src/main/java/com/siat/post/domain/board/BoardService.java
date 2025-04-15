@@ -19,19 +19,23 @@ public class BoardService {
         return boardMapper.selectBoards();
     }
 
-    public BoardResponseDto selectBoard(int boardIdx) throws Exception {
-        return boardMapper.selectBoard(boardIdx);
+    public BoardResponseDto selectBoardByIdx(int boardIdx) throws Exception {
+        return boardMapper.selectBoardByIdx(boardIdx);
+    }
+    public BoardResponseDto selectBoardBySlug(String boardSlug) throws Exception {
+        return boardMapper.selectBoardBySlug(boardSlug);
     }
 
     public int insertBoard(BoardRequestDto boardRequest) throws Exception {
         return boardMapper.insertBoard(boardRequest);
     }
 
-    public int updateBoard(int boardIdx, BoardUpdateRequestDto boardUpdateRequest) throws Exception {
-        return boardMapper.updateBoard(boardIdx, boardUpdateRequest);
+    public int updateBoardBySlug(String boardSlug,BoardUpdateRequestDto boardUpdateRequest) throws Exception {
+        boardUpdateRequest.setBoardSlug(boardSlug);
+        return boardMapper.updateBoardBySlug(boardUpdateRequest);
     }
 
-    public int softDeleteBoard(int boardIdx) throws Exception {
-        return boardMapper.softDeleteBoard(boardIdx);
+    public int softDeleteBoardBySlug(String boardSlug) throws Exception {
+        return boardMapper.softDeleteBoardBySlug(boardSlug);
     }
 }

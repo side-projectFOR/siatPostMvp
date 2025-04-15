@@ -16,7 +16,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.siat.post.domain.board.dto.BoardRequestDto;
 import com.siat.post.domain.board.dto.BoardResponseDto;
 import com.siat.post.domain.board.dto.BoardUpdateRequestDto;
-import com.siat.post.domain.post.dto.PostResponseDto;
 
 import ch.qos.logback.core.util.StringUtil;
 import lombok.RequiredArgsConstructor;
@@ -27,8 +26,8 @@ import lombok.RequiredArgsConstructor;
 public class BoardController {
     private final BoardService boardService;
 
-    @GetMapping("")
-    public @ResponseBody ResponseEntity<List<BoardResponseDto>> getselectBoards() throws Exception {
+    @GetMapping
+    public @ResponseBody ResponseEntity<List<BoardResponseDto>> selectBoards() throws Exception {
         List<BoardResponseDto> boardList = boardService.selectBoards();
         if (boardList != null) {
             return ResponseEntity.ok().body(boardList);
@@ -37,9 +36,12 @@ public class BoardController {
         }
     }
 
-    @GetMapping("/{boardIdx}")
-    public @ResponseBody ResponseEntity<BoardResponseDto> selectBoard(@PathVariable int boardIdx) throws Exception {
-        BoardResponseDto board = boardService.selectBoard(boardIdx);
+    @GetMapping("/{boardSlug}")
+    public @ResponseBody ResponseEntity<? super BoardResponseDto> selectBoard(@PathVariable String boardSlug) throws Exception {
+        if(isVaildBoardSlug(boardSlug)){
+            return ResponseEntity.badRequest().body("요청값 잘못됨");
+        }
+        BoardResponseDto board = boardService.selectBoardBySlug(boardSlug);
         if (board != null) {
             return ResponseEntity.ok().body(board);
         } else {
@@ -57,9 +59,12 @@ public class BoardController {
         }
     }
 
-    @PutMapping("/{boardIdx}")
-    public @ResponseBody ResponseEntity<String> updateBoard(@PathVariable int boardIdx, @RequestBody BoardUpdateRequestDto boardUpdateRequest) throws Exception {
-        int result = boardService.updateBoard(boardIdx, boardUpdateRequest);
+    @PutMapping("/{boardSlug}")
+    public @ResponseBody ResponseEntity<String> updateBoard(@PathVariable String boardSlug, @RequestBody BoardUpdateRequestDto boardUpdateRequest) throws Exception {
+        if(isVaildBoardSlug(boardSlug)){
+            return ResponseEntity.badRequest().body("요청값 잘못됨");
+        }
+        int result = boardService.updateBoardBySlug(boardSlug, boardUpdateRequest);
         if (result > 0) {
             return ResponseEntity.ok().body("게시판 수정 성공");
         } else {
@@ -67,13 +72,20 @@ public class BoardController {
         }
     }
 
-    @DeleteMapping("/{boardIdx}")
-    public @ResponseBody ResponseEntity<String> deleteBoard(@PathVariable int boardIdx) throws Exception {
-        int result = boardService.softDeleteBoard(boardIdx);
+    @DeleteMapping("/{boardSlug}")
+    public @ResponseBody ResponseEntity<String> deleteBoard(@PathVariable String boardSlug) throws Exception {
+        if(isVaildBoardSlug(boardSlug)){
+            return ResponseEntity.badRequest().body("요청값 잘못됨");
+        }
+        int result = boardService.softDeleteBoardBySlug(boardSlug);
         if (result > 0) {
             return ResponseEntity.ok().body("게시판 삭제 성공");
         } else {
             return ResponseEntity.badRequest().body("게시판 삭제 실패");
         }
+    }
+    private boolean isVaildBoardSlug(String boardSlug){
+        
+        return !StringUtil.isNullOrEmpty(boardSlug);
     }
 }

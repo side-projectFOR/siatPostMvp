@@ -12,6 +12,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class BoardUpdateRequestDto {
+    private Integer boardIdx;
     private String boardName;
     private String boardDescription;
     private String boardSlug;

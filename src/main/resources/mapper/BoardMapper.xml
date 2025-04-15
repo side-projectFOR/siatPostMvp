@@ -61,21 +61,37 @@
     )
   </insert>
 
-  <update id="updateBoard" parameterType="com.siat.post.domain.board.dto.BoardUpdateRequestDto">
+  <update id="updateBoardByIdx" parameterType="com.siat.post.domain.board.dto.BoardUpdateRequestDto">
     UPDATE board
     <set>
       <if test="boardName != null">board_name = #{boardName},</if>
       <if test="boardDescription != null">board_description = #{boardDescription},</if>
-      <if test="slug != null">board_slug = #{slug},</if>
+      <if test="boardSlug != null">board_slug = #{boardSlug},</if>
       update_date = now()
     </set>
     WHERE board_idx = #{boardIdx}
   </update>
 
-  <update id="softDeleteBoard" parameterType="Integer">
+  <update id="updateBoardBySlug" parameterType="com.siat.post.domain.board.dto.BoardUpdateRequestDto">
+    UPDATE board
+    <set>
+      <if test="boardName != null">board_name = #{boardName},</if>
+      <if test="boardDescription != null">board_description = #{boardDescription},</if>
+      <if test="boardSlug != null">board_slug = #{boardSlug},</if>
+      update_date = now()
+    </set>
+    WHERE board_idx = (SELECT board_idx FROM board WHERE board_slug = #{boardSlug})
+  </update>
+
+  <update id="softDeleteBoardByIdx" parameterType="Integer">
     UPDATE board
     SET is_delete = 1
     WHERE board_idx = #{boardIdx}
   </update>
 
+  <update id="softDeleteBoardBySlug" parameterType="String">
+    UPDATE board
+    SET is_delete = 1
+    WHERE board_idx = (SELECT board_idx FROM board WHERE board_slug = #{boardSlug})
+  </update>
 </mapper>
