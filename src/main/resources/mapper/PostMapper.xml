@@ -20,7 +20,7 @@
     from post
     where post_idx = #{id} and is_delete = 0
   </select>
-  <select id="selectPosts" resultType="com.siat.post.domain.post.dto.Post">
+  <select id="selectPostWithPassword" parameterType="com.siat.post.domain.post.dto.PostSecretRequestDto">
     select 
       post_idx 
       ,board_idx
@@ -28,6 +28,22 @@
       ,post_author
       ,post_title
       ,post_content
+      ,hit
+      ,is_secret
+      ,post_password
+      ,reg_date
+      ,update_date
+      ,is_delete
+    from post
+    where post_idx = #{postIdx} and is_delete = 0 and post_password=#{postPassword}
+  </select>
+  <select id="selectPosts" resultType="com.siat.post.domain.post.dto.PostSimpleInfoResponseDto">
+    select 
+      post_idx 
+      ,board_idx
+      ,user_idx
+      ,post_author
+      ,post_title
       ,hit
       ,is_secret
       ,post_password
@@ -109,4 +125,14 @@
       is_delete = 1,
     where post_idx = #{postIdx}
   </update>
+  <update id="updatePostHit" parameterType="Long">
+    update post
+      hit=hit+1
+    where post_idx= #{id}
+  </update>
+  <select id="selectPostIsSecret" parameterType="Long" resultType="int">
+      select is_secret 
+      from post
+      where post_idx =#{id}
+  </select>
 </mapper>

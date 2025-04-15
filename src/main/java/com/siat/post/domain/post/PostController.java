@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -13,9 +14,10 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.siat.post.domain.post.dto.PostRequestDto;
 import com.siat.post.domain.post.dto.PostResponseDto;
+import com.siat.post.domain.post.dto.PostSecretRequestDto;
+import com.siat.post.domain.post.dto.PostSimpleInfoResponseDto;
 import com.siat.post.domain.post.dto.PostUpdateRequestDto;
 
-import ch.qos.logback.core.util.StringUtil;
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.web.bind.annotation.PostMapping;
@@ -44,11 +46,11 @@ public class PostController {
     //     }
     // }
     @GetMapping
-    public @ResponseBody ResponseEntity<List<PostResponseDto>> selectPostsByBoard(@PathVariable String boardSlug) throws Exception {
-        if (StringUtil.isNullOrEmpty(boardSlug)) {
+    public @ResponseBody ResponseEntity<List<PostSimpleInfoResponseDto>> selectPostsByBoardSlug(@PathVariable String boardSlug) throws Exception {
+        if (StringUtils.hasText(boardSlug)) {
             return ResponseEntity.badRequest().build();
         }
-        List<PostResponseDto> postList = postService.selectPostsByBoard(boardSlug);
+        List<PostSimpleInfoResponseDto> postList = postService.selectPostsByBoard(boardSlug);
 
         if (postList != null) {
             return ResponseEntity.ok().body(postList);
@@ -59,7 +61,10 @@ public class PostController {
     }
 
     @GetMapping("/{postIdx}")
-    public @ResponseBody ResponseEntity<PostResponseDto> selectPost(@PathVariable Long postIdx) throws Exception {
+    public @ResponseBody ResponseEntity<? super PostResponseDto> selectPost(@PathVariable Long postIdx) throws Exception {
+        if(postService.isPostSecret(postIdx)){
+            return ResponseEntity.ok().body("비밀글입니다");
+        }
         PostResponseDto postInfo = postService.selectPost(postIdx);
         
         if(postInfo!=null){
@@ -69,6 +74,21 @@ public class PostController {
             return ResponseEntity.badRequest().build();
         }
     }
+    @PostMapping("/{postIdx}/auth")
+    public @ResponseBody ResponseEntity<PostResponseDto> selectPostBySecret(@PathVariable Long postIdx, @RequestBody PostSecretRequestDto request) throws Exception {
+        if(postIdx==null||request==null){
+            return ResponseEntity.badRequest().build();
+        }
+        PostResponseDto postInfo = postService.selectPostWithPassword(request);
+        
+        if(postInfo!=null){
+            return ResponseEntity.ok().body(postInfo);
+
+        }else{
+            return ResponseEntity.badRequest().build();
+        }
+    }
+    
     @PostMapping
     public @ResponseBody ResponseEntity<String> insertPost(@RequestBody PostRequestDto post) throws Exception {
         int result=postService.insertPost(post);
