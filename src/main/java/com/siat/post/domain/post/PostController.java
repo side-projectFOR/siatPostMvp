@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
 
 import com.siat.post.domain.post.dto.PostRequestDto;
 import com.siat.post.domain.post.dto.PostResponseDto;
@@ -28,25 +29,14 @@ import org.springframework.web.bind.annotation.PathVariable;
 
 
 
-@Controller
+@RestController
 @RequiredArgsConstructor
 @RequestMapping("/{boardSlug}/posts")
 public class PostController {
     private final PostService postService;
-    
-    // @GetMapping("")
-    // public @ResponseBody ResponseEntity<List<PostResponseDto>> selectPosts() throws Exception {
-    //     List<PostResponseDto> postList = postService.s();
 
-    //     if (postList != null) {
-    //         return ResponseEntity.ok().body(postList);
-
-    //     } else {
-    //         return ResponseEntity.badRequest().build();
-    //     }
-    // }
     @GetMapping
-    public @ResponseBody ResponseEntity<List<PostSimpleInfoResponseDto>> selectPostsByBoardSlug(@PathVariable String boardSlug) throws Exception {
+    public ResponseEntity<List<PostSimpleInfoResponseDto>> selectPostsByBoardSlug(@PathVariable String boardSlug) throws Exception {
         if (StringUtils.hasText(boardSlug)) {
             return ResponseEntity.badRequest().build();
         }
@@ -61,7 +51,7 @@ public class PostController {
     }
 
     @GetMapping("/{postIdx}")
-    public @ResponseBody ResponseEntity<? super PostResponseDto> selectPost(@PathVariable Long postIdx) throws Exception {
+    public ResponseEntity<? super PostResponseDto> selectPost(@PathVariable String boardSlug,@PathVariable Long postIdx) throws Exception {
         if(postService.isPostSecret(postIdx)){
             return ResponseEntity.ok().body("비밀글입니다");
         }
@@ -75,7 +65,7 @@ public class PostController {
         }
     }
     @PostMapping("/{postIdx}/auth")
-    public @ResponseBody ResponseEntity<PostResponseDto> selectPostBySecret(@PathVariable Long postIdx, @RequestBody PostSecretRequestDto request) throws Exception {
+    public ResponseEntity<PostResponseDto> selectPostBySecret(@PathVariable String boardSlug,@PathVariable Long postIdx, @RequestBody PostSecretRequestDto request) throws Exception {
         if(postIdx==null||request==null){
             return ResponseEntity.badRequest().build();
         }
@@ -90,7 +80,7 @@ public class PostController {
     }
     
     @PostMapping
-    public @ResponseBody ResponseEntity<String> insertPost(@RequestBody PostRequestDto post) throws Exception {
+    public ResponseEntity<String> insertPost(@PathVariable String boardSlug,@RequestBody PostRequestDto post) throws Exception {
         int result=postService.insertPost(post);
         if(result>0){
             return ResponseEntity.ok().body("작성성공");
@@ -100,7 +90,7 @@ public class PostController {
         }
     }
     @PutMapping("/{postIdx}")
-    public @ResponseBody ResponseEntity<String> updatePost(@PathVariable Long postIdx, @RequestBody PostUpdateRequestDto postUpdateRequest) throws Exception {
+    public ResponseEntity<String> updatePost(@PathVariable String boardSlug,@PathVariable Long postIdx, @RequestBody PostUpdateRequestDto postUpdateRequest) throws Exception {
         int result=postService.updatePost(postIdx,postUpdateRequest);
         if(result>0){
             return ResponseEntity.ok().body("수정성공");
@@ -110,7 +100,7 @@ public class PostController {
         }
     }
     @DeleteMapping("/{postIdx}")
-    public @ResponseBody ResponseEntity<String> deletePost(@PathVariable Long postIdx) throws Exception {
+    public ResponseEntity<String> deletePost(@PathVariable String boardSlug,@PathVariable Long postIdx) throws Exception {
         int result=postService.softDeltePost(postIdx);
         if(result>0){
             return ResponseEntity.ok().body("삭제성공");
