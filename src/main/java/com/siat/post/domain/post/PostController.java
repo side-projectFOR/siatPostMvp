@@ -2,6 +2,8 @@ package com.siat.post.domain.post;
 
 import java.util.List;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.StringUtils;
@@ -26,17 +28,31 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
-
-
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.ExampleObject;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/{boardSlug}/posts")
+@Tag(name = "PostController", description = "게시판별 게시글CRUD 및 비밀글 인증/조회 API")
 public class PostController {
     private final PostService postService;
 
+    @Operation(
+        summary = "게시판별 게시글 목록 조회",
+        description = "특정 게시판의 모든 게시글 목록을 조회합니다."
+    )
+    @ApiResponse(responseCode = "200", description = "게시글 목록 조회 성공")
+    @ApiResponse(responseCode = "400", description = "잘못된 요청")
     @GetMapping
-    public ResponseEntity<List<PostSimpleInfoResponseDto>> selectPostsByBoardSlug(@PathVariable String boardSlug) throws Exception {
+    public ResponseEntity<List<PostSimpleInfoResponseDto>> selectPostsByBoardSlug(
+        @Parameter(description = "게시판 식별자(boardSlug)", example = "free") @PathVariable String boardSlug
+    ) throws Exception {
         if (StringUtils.hasText(boardSlug)) {
             return ResponseEntity.badRequest().build();
         }
@@ -44,28 +60,66 @@ public class PostController {
 
         if (postList != null) {
             return ResponseEntity.ok().body(postList);
-
         } else {
             return ResponseEntity.badRequest().build();
         }
     }
 
+    @Operation(
+        summary = "게시글 상세 조회",
+        description = "게시판 내 특정 게시글의 상세 정보를 조회합니다. 비밀글일 경우 안내 메시지를 반환합니다."
+    )
+    @ApiResponse(responseCode = "200", 
+            description = "게시글 조회 성공", 
+            content = @Content(
+                mediaType = "application/json",
+                    schema = @Schema(implementation = PostResponseDto.class
+                    )
+            )
+    )
+    @ApiResponse(responseCode = "400", description = "잘못된 요청 또는 게시글 없음")
+    @ApiResponse(
+        responseCode = "403", description = "비밀글이므로 /{postIdx}/auth로 요청필요",
+        content = @Content(
+            mediaType = "application/json",
+            examples = @ExampleObject(value = "비밀글입니다")
+        )
+    )
     @GetMapping("/{postIdx}")
-    public ResponseEntity<? super PostResponseDto> selectPost(@PathVariable String boardSlug,@PathVariable Long postIdx) throws Exception {
+    public ResponseEntity<? super PostResponseDto> selectPost(
+        @Parameter(description = "게시판 식별자(boardSlug)", example = "free") @PathVariable String boardSlug,
+        @Parameter(description = "게시글 인덱스", example = "1") @PathVariable Long postIdx
+    ) throws Exception {
         if(postService.isPostSecret(postIdx)){
-            return ResponseEntity.ok().body("비밀글입니다");
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("비밀글입니다");
         }
         PostResponseDto postInfo = postService.selectPost(postIdx);
         
         if(postInfo!=null){
             return ResponseEntity.ok().body(postInfo);
-
         }else{
             return ResponseEntity.badRequest().build();
         }
     }
+
+    @Operation(
+        summary = "비밀글 인증 및 조회",
+        description = "비밀글에 대해 패스워드를 입력받아 인증 후, 해당 게시글을 반환합니다."
+    )
+    @ApiResponse(
+        responseCode = "200", description = "조회 성공"
+        
+    )
+    @ApiResponse(
+        responseCode = "400", description = "비밀번호 틀림, 잘못된 요청"
+    )
     @PostMapping("/{postIdx}/auth")
-    public ResponseEntity<PostResponseDto> selectPostBySecret(@PathVariable String boardSlug,@PathVariable Long postIdx, @RequestBody PostSecretRequestDto request) throws Exception {
+    public ResponseEntity<PostResponseDto> selectPostBySecret(
+        @Parameter(description = "게시판 식별자(boardSlug)", example = "free") @PathVariable String boardSlug,
+        @Parameter(description = "게시글 인덱스", example = "1") @PathVariable Long postIdx,
+        @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "비밀글 인증 요청 정보(password)", required = true)
+        @RequestBody PostSecretRequestDto request
+    ) throws Exception {
         if(postIdx==null||request==null){
             return ResponseEntity.badRequest().build();
         }
@@ -73,42 +127,108 @@ public class PostController {
         
         if(postInfo!=null){
             return ResponseEntity.ok().body(postInfo);
-
         }else{
             return ResponseEntity.badRequest().build();
         }
     }
     
+    @Operation(
+        summary = "게시글 작성",
+        description = "게시판에 새로운 게시글을 작성합니다."
+    )
+    @ApiResponse(
+        responseCode = "200", description = "작성 성공",
+        content = @Content(
+            mediaType = "application/json",
+            examples = @ExampleObject(value = "작성성공")
+        )
+    )
+    @ApiResponse(
+        responseCode = "400", description = "잘못된 요청(예: 입력값 누락 등)",
+        content = @Content(
+            mediaType = "application/json",
+            examples = @ExampleObject(value = "작성실패")
+        )
+    )
     @PostMapping
-    public ResponseEntity<String> insertPost(@PathVariable String boardSlug,@RequestBody PostRequestDto post) throws Exception {
+    public ResponseEntity<String> insertPost(
+        @Parameter(description = "게시판 식별자(boardSlug)", example = "free") @PathVariable String boardSlug,
+        @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "게시글 작성 정보", required = true)
+        @RequestBody PostRequestDto post
+    ) throws Exception {
         int result=postService.insertPost(post);
         if(result>0){
             return ResponseEntity.ok().body("작성성공");
-
         }else{
             return ResponseEntity.badRequest().body("작성실패");
         }
     }
+
+    @Operation(
+        summary = "게시글 수정",
+        description = "기존 게시글을 수정합니다."
+    )
+    @ApiResponse(
+        responseCode = "200", description = "수정 성공",
+        content = @Content(
+            mediaType = "application/json",
+            examples = @ExampleObject(value = "수정성공")
+        )
+    )
+    @ApiResponse(
+        responseCode = "400", description = "잘못된 요청",
+        content = @Content(
+            mediaType = "application/json",
+            examples = @ExampleObject(value = "수정실패")
+        )
+    )
     @PutMapping("/{postIdx}")
-    public ResponseEntity<String> updatePost(@PathVariable String boardSlug,@PathVariable Long postIdx, @RequestBody PostUpdateRequestDto postUpdateRequest) throws Exception {
+    public ResponseEntity<String> updatePost(
+        @Parameter(description = "게시판 식별자(slug)", example = "free") @PathVariable String boardSlug,
+        @Parameter(description = "게시글 인덱스", example = "1") @PathVariable Long postIdx,
+        @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "게시글 수정 정보", required = true)
+        @RequestBody PostUpdateRequestDto postUpdateRequest
+    ) throws Exception {
         int result=postService.updatePost(postIdx,postUpdateRequest);
         if(result>0){
             return ResponseEntity.ok().body("수정성공");
-
         }else{
             return ResponseEntity.badRequest().body("수정실패");
         }
     }
+
+    @Operation(
+        summary = "게시글 삭제",
+        description = "해당 게시글을 삭제합니다."
+    )
+    @ApiResponse(
+    responseCode = "200", description = "성공 시 메시지",
+    content = @Content(
+        mediaType = "application/json",
+        examples = @ExampleObject(
+            name = "삭제 성공 예시",
+            value = "삭제성공"
+        )
+        )
+    )
+    @ApiResponse(
+        responseCode = "400", description = "잘못된 요청",
+        content = @Content(
+            mediaType = "application/json",
+            examples = @ExampleObject(value = "삭제실패")
+        )
+    )
     @DeleteMapping("/{postIdx}")
-    public ResponseEntity<String> deletePost(@PathVariable String boardSlug,@PathVariable Long postIdx) throws Exception {
+    public ResponseEntity<String> deletePost(
+        @Parameter(description = "게시판 식별자(slug)", example = "free") @PathVariable String boardSlug,
+        @Parameter(description = "게시글 인덱스", example = "1") @PathVariable Long postIdx
+    ) throws Exception {
         int result=postService.softDeltePost(postIdx);
         if(result>0){
             return ResponseEntity.ok().body("삭제성공");
-
         }else{
             return ResponseEntity.ok().body("삭제실패");
         }
     }
-    
-    
 }
+
