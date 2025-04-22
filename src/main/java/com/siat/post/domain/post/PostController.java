@@ -53,7 +53,7 @@ public class PostController {
     public ResponseEntity<List<PostSimpleInfoResponseDto>> selectPostsByBoardSlug(
         @Parameter(description = "게시판 식별자(boardSlug)", example = "free") @PathVariable String boardSlug
     ) throws Exception {
-        if (StringUtils.hasText(boardSlug)) {
+        if (!StringUtils.hasText(boardSlug)) {
             return ResponseEntity.badRequest().build();
         }
         List<PostSimpleInfoResponseDto> postList = postService.selectPostsByBoard(boardSlug);
@@ -78,20 +78,14 @@ public class PostController {
             )
     )
     @ApiResponse(responseCode = "400", description = "잘못된 요청 또는 게시글 없음")
-    @ApiResponse(
-        responseCode = "403", description = "비밀글이므로 /{postIdx}/auth로 요청필요",
-        content = @Content(
-            mediaType = "application/json",
-            examples = @ExampleObject(value = "비밀글입니다")
-        )
-    )
+    @ApiResponse(responseCode = "403", description = "비밀글이므로 /{postIdx}/auth로 요청필요")
     @GetMapping("/{postIdx}")
-    public ResponseEntity<? super PostResponseDto> selectPost(
+    public ResponseEntity<PostResponseDto> selectPost(
         @Parameter(description = "게시판 식별자(boardSlug)", example = "free") @PathVariable String boardSlug,
         @Parameter(description = "게시글 인덱스", example = "1") @PathVariable Long postIdx
     ) throws Exception {
         if(postService.isPostSecret(postIdx)){
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("비밀글입니다");
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }
         PostResponseDto postInfo = postService.selectPost(postIdx);
         
@@ -223,7 +217,7 @@ public class PostController {
         @Parameter(description = "게시판 식별자(slug)", example = "free") @PathVariable String boardSlug,
         @Parameter(description = "게시글 인덱스", example = "1") @PathVariable Long postIdx
     ) throws Exception {
-        int result=postService.softDeltePost(postIdx);
+        int result=postService.softDeletePost(postIdx);
         if(result>0){
             return ResponseEntity.ok().body("삭제성공");
         }else{

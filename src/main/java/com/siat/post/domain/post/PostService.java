@@ -66,7 +66,7 @@ public class PostService {
         return postMapper.updatePost(post);
     }
 
-    public int softDeltePost(Long postIdx) throws Exception {
+    public int softDeletePost(Long postIdx) throws Exception {
         
         return postMapper.softDeletePost(postIdx);
     }
