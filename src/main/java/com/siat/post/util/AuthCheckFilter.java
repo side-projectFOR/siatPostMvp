@@ -9,8 +9,8 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import java.io.IOException;
 
-@Component
-@WebFilter(urlPatterns = {"/index.html", "/protected/*"})
+//@Component
+//@WebFilter(urlPatterns = {"/index.html", "/protected/*"})
 public class AuthCheckFilter implements Filter {
 
     @Override
