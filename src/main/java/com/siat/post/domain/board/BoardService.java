@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
+import com.siat.post.domain.board.dto.Board;
 import com.siat.post.domain.board.dto.BoardRequestDto;
 import com.siat.post.domain.board.dto.BoardResponseDto;
 import com.siat.post.domain.board.dto.BoardUpdateRequestDto;
@@ -27,7 +28,12 @@ public class BoardService {
     }
 
     public int insertBoard(BoardRequestDto boardRequest) throws Exception {
-        return boardMapper.insertBoard(boardRequest);
+        Board board = Board.builder()
+                        .boardDescription(boardRequest.getBoardDescription())
+                        .boardName(boardRequest.getBoardName())
+                        .boardSlug(boardRequest.getBoardSlug())
+                        .build();
+        return boardMapper.insertBoard(board);
     }
 
     public int updateBoardBySlug(String boardSlug,BoardUpdateRequestDto boardUpdateRequest) throws Exception {

@@ -43,7 +43,7 @@
     WHERE board_slug = #{boardSlug} AND is_delete = 0
   </select>
 
-  <insert id="insertBoard" parameterType="com.siat.post.domain.board.dto.BoardRequestDto" useGeneratedKeys="true" keyProperty="boardIdx" keyColumn="board_idx">
+  <insert id="insertBoard" parameterType="com.siat.post.domain.board.dto.Board" useGeneratedKeys="true" keyProperty="boardIdx" keyColumn="board_idx">
     INSERT INTO board (
       board_name,
       board_description,
@@ -54,7 +54,7 @@
     ) VALUES (
       #{boardName},
       #{boardDescription},
-      #{slug},
+      #{boardSlug},
       now(),
       now(),
       0
