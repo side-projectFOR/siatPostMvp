@@ -14,7 +14,7 @@ public class MemberSelectResponseDto {
     private String userName;
     private String userEmail;
     private String userNickname;
-    private String grade; // ENUM('USER', 'ADMIN')
+    private String grade;
     private Long userPoint;
     private String userThumbnailFileUrl;
     private String profileDescription;

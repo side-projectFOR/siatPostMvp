@@ -4,6 +4,7 @@ import com.siat.post.domain.member.dto.MemberInsertRequestDto;
 import com.siat.post.domain.member.dto.MemberSelectResponseDto;
 import com.siat.post.domain.member.dto.MemberUpdateRequestDto;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -25,7 +26,7 @@ import java.util.List;
 public class MemberController {
     private final MemberService memberService;
 
-    @Operation(summary = "회원 정보 조회", description = "ID를 통해 특정 회원의 정보를 조회합니다.")
+    @Operation(summary = "회원 정보 조회", description = "회원 번호를 통해 특정 회원의 정보를 조회합니다.")
     @GetMapping("/select")
     public ResponseEntity<MemberSelectResponseDto> selectMember(@RequestParam("id") int id, Model model) throws Exception{
         return ResponseEntity.ok(memberService.selectMember(id));
@@ -37,6 +38,13 @@ public class MemberController {
         return ResponseEntity.ok(members);
     }
 
+    @Parameter(
+            name = "grade",
+            description = "회원 등급",
+            example = "USER",
+            required = true,
+            schema = @Schema(allowableValues = {"USER", "ADMIN"})
+    )
     @Operation(summary = "회원 등록", description = "새로운 회원을 등록합니다.")
     @PostMapping("/insert")
     public ResponseEntity<String> insertMember(@RequestBody MemberInsertRequestDto requestDto,
