@@ -14,6 +14,7 @@ public interface BoardMapper {
     List<BoardResponseDto> selectBoards() throws SQLException;
     BoardResponseDto selectBoardByIdx(Integer boardIdx) throws SQLException;
     BoardResponseDto selectBoardBySlug(String boardSlug) throws SQLException;
+    Integer selectBoardIdxByboardSlug(String boardSlug) throws SQLException;
     int insertBoard(Board boardRequest) throws SQLException;
     int updateBoardByIdx(BoardUpdateRequestDto boardUpdateRequest) throws SQLException;
     int updateBoardBySlug(BoardUpdateRequestDto boardUpdateRequest) throws SQLException;
