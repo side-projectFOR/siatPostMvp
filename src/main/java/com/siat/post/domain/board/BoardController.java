@@ -42,12 +42,12 @@ public class BoardController {
     }
 
     @GetMapping("/{boardSlug}")
-    @Operation(summary = "특정 게시판 조회", description = "슬러그를 이용해 특정 게시판 반환")
+    @Operation(summary = "특정 게시판 조회", description = "boardSlug를 이용해 특정 게시판정보 반환")
     @ApiResponse(responseCode = "200", description = "조회 성공")
     @ApiResponse(responseCode = "400", description = "잘못된 요청")
-    public ResponseEntity<? super BoardResponseDto> selectBoard(@PathVariable String boardSlug) throws Exception {
+    public ResponseEntity<BoardResponseDto> selectBoard(@PathVariable String boardSlug) throws Exception {
         if(boardService.isVaildBoardSlug(boardSlug)){
-            return ResponseEntity.badRequest().body("요청값 잘못됨");
+            return ResponseEntity.badRequest().build();
         }
         BoardResponseDto board = boardService.selectBoardBySlug(boardSlug);
         if (board != null) {
@@ -58,7 +58,7 @@ public class BoardController {
     }
     
     @PostMapping
-    @Operation(summary = "새로운 게시판 생성", description = "제공된 정보로 새로운 게시판 생성")
+    @Operation(summary = "새로운 게시판 생성", description = "새로운 게시판 생성")
     @ApiResponse(responseCode = "200", description = "생성 성공")
     @ApiResponse(responseCode = "400", description = "생성 실패")
     public ResponseEntity<String> insertBoard(@RequestBody BoardRequestDto boardRequest) throws Exception {
@@ -71,7 +71,7 @@ public class BoardController {
     }
 
     @PutMapping("/{boardSlug}")
-    @Operation(summary = "게시판 수정", description = "슬러그로 특정 게시판 정보 수정")
+    @Operation(summary = "게시판 수정", description = "boardSlug로 특정 게시판 정보 수정")
     @ApiResponse(responseCode = "200", description = "수정 성공")
     @ApiResponse(responseCode = "400", description = "수정 실패")
     public ResponseEntity<String> updateBoard(@PathVariable String boardSlug, @RequestBody BoardUpdateRequestDto boardUpdateRequest) throws Exception {
@@ -87,7 +87,7 @@ public class BoardController {
     }
 
     @DeleteMapping("/{boardSlug}")
-    @Operation(summary = "게시판 삭제", description = "is_delete 플래그를 이용한 게시판 소프트 삭제")
+    @Operation(summary = "게시판 삭제", description = "게시판 소프트 삭제")
     @ApiResponse(responseCode = "200", description = "삭제 성공")
     @ApiResponse(responseCode = "400", description = "삭제 실패")
     public ResponseEntity<String> deleteBoard(@PathVariable String boardSlug) throws Exception {
