@@ -19,6 +19,6 @@ public class BoardUpdateRequestDto {
     private String boardDescription;
     @Schema(hidden = true)
     private String boardSlug;
-    private LocalDateTime updateDate;
+    @Schema(hidden = true)
     private Boolean isDelete;
 }
