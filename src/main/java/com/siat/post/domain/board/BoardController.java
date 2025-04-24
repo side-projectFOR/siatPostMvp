@@ -2,6 +2,8 @@ package com.siat.post.domain.board;
 
 import java.util.List;
 
+import org.springframework.dao.DuplicateKeyException;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -61,13 +63,19 @@ public class BoardController {
     @Operation(summary = "새로운 게시판 생성", description = "새로운 게시판 생성")
     @ApiResponse(responseCode = "200", description = "생성 성공")
     @ApiResponse(responseCode = "400", description = "생성 실패")
+    @ApiResponse(responseCode = "409", description = "boardSlug 중복")
     public ResponseEntity<String> insertBoard(@RequestBody BoardRequestDto boardRequest) throws Exception {
-        int result = boardService.insertBoard(boardRequest);
-        if (result > 0) {
-            return ResponseEntity.ok().body("게시판 생성 성공");
-        } else {
-            return ResponseEntity.badRequest().body("게시판 생성 실패");
+        try {
+            int result = boardService.insertBoard(boardRequest);
+            if (result > 0) {
+                return ResponseEntity.ok().body("게시판 생성 성공");
+            } else {
+                return ResponseEntity.badRequest().body("게시판 생성 실패");
+            }
+        } catch (DuplicateKeyException e) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
         }
+        
     }
 
     @PutMapping("/{boardSlug}")

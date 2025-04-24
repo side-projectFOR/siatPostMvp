@@ -2,7 +2,9 @@ package com.siat.post.domain.board;
 
 import java.util.List;
 
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import com.siat.post.domain.board.dto.Board;
 import com.siat.post.domain.board.dto.BoardRequestDto;
@@ -40,6 +42,9 @@ public class BoardService {
     }
 
     public int insertBoard(BoardRequestDto boardRequest) throws Exception {
+        if(boardMapper.existsByBoardSlug(boardRequest.getBoardSlug())){
+            throw new DuplicateKeyException("boardSlug 중복");
+        }
         Board board = Board.builder()
                         .boardDescription(boardRequest.getBoardDescription())
                         .boardName(boardRequest.getBoardName())
@@ -55,5 +60,9 @@ public class BoardService {
 
     public int softDeleteBoardBySlug(String boardSlug) throws Exception {
         return boardMapper.softDeleteBoardBySlug(boardSlug);
+    }
+
+    public boolean isVaildBoardSlug(String boardSlug){
+        return !StringUtils.hasText(boardSlug);
     }
 }
