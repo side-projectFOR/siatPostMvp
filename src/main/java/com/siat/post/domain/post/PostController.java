@@ -56,7 +56,7 @@ public class PostController {
         if (!StringUtils.hasText(boardSlug)) {
             return ResponseEntity.badRequest().build();
         }
-        List<PostSimpleInfoResponseDto> postList = postService.selectPostsByBoard(boardSlug);
+        List<PostSimpleInfoResponseDto> postList = postService.selectPostsByBoardSlug(boardSlug);
 
         if (postList != null) {
             return ResponseEntity.ok().body(postList);
@@ -150,7 +150,7 @@ public class PostController {
         @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "게시글 작성 정보", required = true)
         @RequestBody PostRequestDto post
     ) throws Exception {
-        int result=postService.insertPost(post);
+        int result=postService.insertPostByBoardSlug(post,boardSlug);
         if(result>0){
             return ResponseEntity.ok().body("작성성공");
         }else{
@@ -183,7 +183,7 @@ public class PostController {
         @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "게시글 수정 정보", required = true)
         @RequestBody PostUpdateRequestDto postUpdateRequest
     ) throws Exception {
-        int result=postService.updatePost(postIdx,postUpdateRequest);
+        int result=postService.updatePostByBoardSlug(postIdx,boardSlug,postUpdateRequest);
         if(result>0){
             return ResponseEntity.ok().body("수정성공");
         }else{

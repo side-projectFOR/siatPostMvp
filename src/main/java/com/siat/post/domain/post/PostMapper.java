@@ -19,7 +19,7 @@ public interface PostMapper {
     public int insertPost(Post post) throws SQLException;
     public int updatePost(PostUpdateRequestDto post) throws SQLException;
     public int softDeletePost(Long post) throws SQLException;
-    public List<PostSimpleInfoResponseDto> selectPostsByBoard(String boardSlug) throws SQLException;
+    public List<PostSimpleInfoResponseDto> selectPostsByBoardIdx(Integer boardIdx) throws SQLException;
     // public int deletePost(long postIdx)  throws SQLException;
     public int updatePostHit(Long postIdx) throws SQLException; 
     public int selectPostIsSecret(Long postIdx) throws SQLException;

@@ -3,6 +3,7 @@
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.siat.post.domain.post.PostMapper">
+
   <select id="selectPost" parameterType="Long">
     select 
       post_idx 
@@ -46,14 +47,13 @@
       ,post_title
       ,hit
       ,is_secret
-      ,post_password
       ,reg_date
       ,update_date
       ,is_delete
     from post 
     where is_delete = 0
   </select>
-  <select id="selectPostsByBoard" parameterType="String" resultType="com.siat.post.domain.post.dto.Post">
+  <select id="selectPostsByBoardIdx" parameterType="Integer" resultType="com.siat.post.domain.post.dto.PostSimpleInfoResponseDto">
     select 
       post_idx 
       ,board_idx
@@ -69,7 +69,7 @@
       ,is_delete
     from post 
     where is_delete = 0 
-    and board_idx in (select board_idx from board where board_slug=#{id})
+    and board_idx = #{boardIdx}
   </select>
   <insert id="insertPost" parameterType="com.siat.post.domain.post.dto.Post" useGeneratedKeys="true" keyProperty="postIdx" keyColumn="post_idx">
     insert into post(  
@@ -80,7 +80,9 @@
       ,post_content
       ,hit
       ,is_secret
-      ,post_password)
+      ,post_password
+      ,reg_date
+      )
     values(
       #{boardIdx}
       ,#{userIdx}
@@ -90,6 +92,7 @@
       ,#{hit}
       ,#{isSecret}
       ,#{postPassword}
+      ,CURRENT_TIMESTAMP
       )
   </insert>
   <update id="updatePost" parameterType="com.siat.post.domain.post.dto.PostUpdateRequestDto">
@@ -105,18 +108,13 @@
         <if test="postContent != null">
         post_content = #{postContent},
         </if>
-        <if test="hit != null">
-        hit = #{hit},
-        </if>
         <if test="isSecret != null">
         is_secrect = #{isSecret},
         </if>
         <if test="postPassword != null">
         post_password = #{postPassword},
         </if>
-        <if test="updateDate != null">
-        update_date = #{updateDate},
-        </if>
+        update_date = CURRENT_TIMESTAMP,
     </set>
     where post_idx = #{postIdx}
   </update>
@@ -127,7 +125,7 @@
   </update>
   <update id="updatePostHit" parameterType="Long">
     update post
-      hit=hit+1
+    set   hit=hit+1
     where post_idx= #{id}
   </update>
   <select id="selectPostIsSecret" parameterType="Long" resultType="int">

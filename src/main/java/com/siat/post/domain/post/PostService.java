@@ -5,7 +5,9 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import com.siat.post.domain.board.BoardMapper;
 import com.siat.post.domain.post.dto.Post;
 import com.siat.post.domain.post.dto.PostRequestDto;
 import com.siat.post.domain.post.dto.PostResponseDto;
@@ -19,6 +21,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class PostService {
     private final PostMapper postMapper;
+    private final BoardMapper boardMapper;
     // 조회수는 중요하지 않은 듯하여 트랜잭션 안 걸음
     public PostResponseDto selectPost(long postIdx) throws Exception {
         Post post = postMapper.selectPost(postIdx);
@@ -29,18 +32,19 @@ public class PostService {
             return null;
         }
     }
-    
-    public List<PostSimpleInfoResponseDto> selectPostsByBoard(String boardSlug) throws Exception{
-        List<PostSimpleInfoResponseDto> postList = postMapper.selectPostsByBoard(boardSlug);
+    public List<PostSimpleInfoResponseDto> selectPostsByBoardSlug(String boardSlug) throws Exception{
+        Integer boardIdx= boardMapper.selectBoardIdxByboardSlug(boardSlug);
+        List<PostSimpleInfoResponseDto> postList = postMapper.selectPostsByBoardIdx(boardIdx);
         return postList;
     }
     public List<PostResponseDto> selectPosts() throws Exception{
         List<Post> postList = postMapper.selectPosts();
         return postList.stream().map(Post::toDto).toList();
     }
-    public int insertPost(PostRequestDto postRequest) throws Exception{
+    public int insertPostByBoardSlug(PostRequestDto postRequest,String boardSlug) throws Exception{
+        Integer boardIdx= boardMapper.selectBoardIdxByboardSlug(boardSlug);
         Post post = Post.builder()
-                        .boardIdx(postRequest.getBoardIdx())
+                        .boardIdx(boardIdx)
                         .userIdx(postRequest.getUserIdx())
                         .postAuthor(postRequest.getPostAuthor())
                         .postTitle(postRequest.getPostTitle())
@@ -50,17 +54,17 @@ public class PostService {
                         .build();
         return  postMapper.insertPost(post);
     }
-    public int updatePost(long postIdx, PostUpdateRequestDto postUpdateRequest) throws Exception {
+    public int updatePostByBoardSlug(Long postIdx, String boardSlug , PostUpdateRequestDto postUpdateRequest) throws Exception {
+        Integer boardIdx= boardMapper.selectBoardIdxByboardSlug(boardSlug);
         PostUpdateRequestDto post = PostUpdateRequestDto.builder()
-                        .boardIdx(postUpdateRequest.getBoardIdx())
+                        .postIdx(postIdx)
+                        .boardIdx(boardIdx)
                         .postAuthor(postUpdateRequest.getPostAuthor())
                         .postTitle(postUpdateRequest.getPostTitle())
                         .postContent(postUpdateRequest.getPostContent())
-                        .hit(postUpdateRequest.getHit())
                         .isSecret(postUpdateRequest.getIsSecret())
                         .postPassword(postUpdateRequest.getPostPassword())
                         .isDelete(postUpdateRequest.getIsDelete())
-                        .updateDate(LocalDateTime.now())
                         .build();
     
         return postMapper.updatePost(post);
@@ -84,5 +88,8 @@ public class PostService {
         } else {
             return null;
         }
+    }
+    public Integer selectBoardIdxByBoardSlug(String boardSlug) throws Exception{
+        return boardMapper.selectBoardIdxByboardSlug(boardSlug);
     }
 }

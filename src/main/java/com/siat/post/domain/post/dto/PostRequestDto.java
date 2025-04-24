@@ -5,17 +5,16 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import lombok.ToString;
 
 @Builder
 @Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
 public class PostRequestDto {
-    @Schema(description = "게시판 고유 인덱스", example = "1")
-    private Integer boardIdx;
-
     @Schema(description = "작성자(회원) 고유 인덱스. 비회원일 경우 null", example = "123")
     private Integer userIdx;
 
