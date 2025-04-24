@@ -4,6 +4,7 @@ import java.sql.SQLException;
 import java.util.List;
 
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 import com.siat.post.domain.board.dto.Board;
 import com.siat.post.domain.board.dto.BoardResponseDto;
@@ -20,4 +21,5 @@ public interface BoardMapper {
     int updateBoardBySlug(BoardUpdateRequestDto boardUpdateRequest) throws SQLException;
     int softDeleteBoardByIdx(Integer boardIdx) throws SQLException;
     int softDeleteBoardBySlug(String boardSlug) throws SQLException;
+    boolean existsByBoardSlug(@Param("boardSlug") String boardSlug);
 }

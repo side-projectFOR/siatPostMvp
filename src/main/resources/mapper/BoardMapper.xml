@@ -15,6 +15,14 @@
     <include refid="boardIdxByboardSlug"></include>
   </select>
 
+  <select id="existsByBoardSlug" resultType="boolean" parameterType="String">
+    SELECT EXISTS (
+      SELECT 1
+      FROM board
+      WHERE board_slug = #{boardSlug}
+    ) AS exist
+  </select>
+
   <select id="selectBoards" resultType="com.siat.post.domain.board.dto.BoardResponseDto">
     SELECT 
       board_idx,
