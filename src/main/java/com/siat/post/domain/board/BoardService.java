@@ -21,10 +21,22 @@ public class BoardService {
     }
 
     public BoardResponseDto selectBoardByIdx(int boardIdx) throws Exception {
-        return boardMapper.selectBoardByIdx(boardIdx);
+        BoardResponseDto boardInfo = boardMapper.selectBoardByIdx(boardIdx);
+        if(boardInfo!=null){
+            if(!boardInfo.getIsDelete()){
+                return boardInfo;
+            }
+        }
+        return null;
     }
     public BoardResponseDto selectBoardBySlug(String boardSlug) throws Exception {
-        return boardMapper.selectBoardBySlug(boardSlug);
+        BoardResponseDto boardInfo = boardMapper.selectBoardBySlug(boardSlug);
+        if(boardInfo!=null){
+            if(!boardInfo.getIsDelete()){
+                return boardInfo;
+            }
+        }
+        return null;
     }
 
     public int insertBoard(BoardRequestDto boardRequest) throws Exception {
