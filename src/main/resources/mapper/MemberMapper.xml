@@ -7,7 +7,7 @@
     <!--   insertMember     -->
     <insert id="insertMember" parameterType="com.siat.post.domain.member.Member"
         useGeneratedKeys="true" keyProperty="userIdx" keyColumn="user_idx">
-        INSERT INTO member (
+        INSERT INTO MEMBER_TBL (
                 user_id,
                 user_password,
                 user_name,
@@ -55,7 +55,7 @@
                 update_date,
                 is_delete
             FROM
-                member
+                MEMBER_TBL
             WHERE
                 user_idx = #{id}
         </select>
@@ -77,12 +77,12 @@
             update_date,
             is_delete
             FROM
-            member
+            MEMBER_TBL
         </select>
 
         <!--  updateMember  -->
         <update id="updateMember" parameterType="com.siat.post.domain.member.Member">
-            UPDATE member
+            UPDATE MEMBER_TBL
             <set>
                 <if test="userId != null and userId != ''">user_id = #{userId},</if>
                 <if test="userPassword != null and userPassword != ''">user_password = #{userPassword},</if>
@@ -100,7 +100,7 @@
 
         <!--  deleteMember  -->
         <delete id="deleteMember" parameterType="int">
-            DELETE FROM member
+            DELETE FROM MEMBER_TBL
             WHERE user_idx = #{id}
         </delete>
     </mapper>

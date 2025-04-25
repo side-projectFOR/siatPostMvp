@@ -5,7 +5,7 @@
 <mapper namespace="com.siat.post.domain.board.BoardMapper">
   <sql id="boardIdxByboardSlug">
     SELECT board_idx 
-    FROM board 
+    FROM BOARD_TBL
     <where>
       board_slug = #{boardSlug}   
     </where>
@@ -18,7 +18,7 @@
   <select id="existsByBoardSlug" resultType="boolean" parameterType="String">
     SELECT EXISTS (
       SELECT 1
-      FROM board
+      FROM BOARD_TBL
       WHERE board_slug = #{boardSlug}
     ) AS exist
   </select>
@@ -32,7 +32,7 @@
       reg_date,
       update_date,
       is_delete
-    FROM board
+    FROM BOARD_TBL
     WHERE is_delete = 0
   </select>
 
@@ -45,7 +45,7 @@
       reg_date,
       update_date,
       is_delete
-    FROM board
+    FROM BOARD_TBL
     WHERE board_idx = #{boardIdx}
   </select>
 
@@ -58,12 +58,12 @@
       reg_date,
       update_date,
       is_delete
-    FROM board
+    FROM BOARD_TBL
     WHERE board_slug = #{boardSlug}
   </select>
 
   <insert id="insertBoard" parameterType="com.siat.post.domain.board.dto.Board" useGeneratedKeys="true" keyProperty="boardIdx" keyColumn="board_idx">
-    INSERT INTO board (
+    INSERT INTO BOARD_TBL (
       board_name,
       board_description,
       board_slug,
@@ -77,7 +77,7 @@
   </insert>
 
   <update id="updateBoardByIdx" parameterType="com.siat.post.domain.board.dto.BoardUpdateRequestDto">
-    UPDATE board
+    UPDATE BOARD_TBL
     <set>
       <if test="boardName != null">board_name = #{boardName},</if>
       <if test="boardDescription != null">board_description = #{boardDescription},</if>
@@ -88,7 +88,7 @@
   </update>
 
   <update id="updateBoardBySlug" parameterType="com.siat.post.domain.board.dto.BoardUpdateRequestDto">
-    UPDATE board
+    UPDATE BOARD_TBL
     <set>
       <if test="boardName != null">board_name = #{boardName},</if>
       <if test="boardDescription != null">board_description = #{boardDescription},</if>
@@ -99,13 +99,13 @@
   </update>
 
   <update id="softDeleteBoardByIdx" parameterType="Integer">
-    UPDATE board
+    UPDATE BOARD_TBL
     SET is_delete = 1
     WHERE board_idx = #{boardIdx}
   </update>
 
   <update id="softDeleteBoardBySlug" parameterType="String">
-    UPDATE board
+    UPDATE BOARD_TBL
     SET is_delete = 1
     WHERE board_idx = (<include refid="boardIdxByboardSlug"></include>)
   </update>

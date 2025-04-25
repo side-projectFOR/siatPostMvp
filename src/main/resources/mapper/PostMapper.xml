@@ -18,7 +18,7 @@
       ,reg_date
       ,update_date
       ,is_delete
-    from post
+    from POST_TBL
     where post_idx = #{id} and is_delete = 0
   </select>
   <select id="selectPostWithPassword" parameterType="com.siat.post.domain.post.dto.PostSecretRequestDto">
@@ -35,7 +35,7 @@
       ,reg_date
       ,update_date
       ,is_delete
-    from post
+    from POST_TBL
     where post_idx = #{postIdx} and is_delete = 0 and post_password=#{postPassword}
   </select>
   <select id="selectPosts" resultType="com.siat.post.domain.post.dto.PostSimpleInfoResponseDto">
@@ -50,7 +50,7 @@
       ,reg_date
       ,update_date
       ,is_delete
-    from post 
+    from POST_TBL
     where is_delete = 0
   </select>
   <select id="selectPostsByBoardIdx" parameterType="Integer" resultType="com.siat.post.domain.post.dto.PostSimpleInfoResponseDto">
@@ -67,12 +67,12 @@
       ,reg_date
       ,update_date
       ,is_delete
-    from post 
+    from POST_TBL
     where is_delete = 0 
     and board_idx = #{boardIdx}
   </select>
   <insert id="insertPost" parameterType="com.siat.post.domain.post.dto.Post" useGeneratedKeys="true" keyProperty="postIdx" keyColumn="post_idx">
-    insert into post(  
+    insert into POST_TBL(
       board_idx
       ,user_idx
       ,post_author
@@ -96,7 +96,7 @@
       )
   </insert>
   <update id="updatePost" parameterType="com.siat.post.domain.post.dto.PostUpdateRequestDto">
-    update post
+    update POST_TBL
     <set>
         <if test="boardIdx != null">
         board_idx = #{boardIdx},
@@ -119,18 +119,18 @@
     where post_idx = #{postIdx}
   </update>
   <update id="softDeletePost" parameterType="Long">
-    update post 
+    update POST_TBL
       is_delete = 1,
     where post_idx = #{postIdx}
   </update>
   <update id="updatePostHit" parameterType="Long">
-    update post
+    update POST_TBL
     set   hit=hit+1
     where post_idx= #{id}
   </update>
   <select id="selectPostIsSecret" parameterType="Long" resultType="int">
       select is_secret 
-      from post
+      from POST_TBL
       where post_idx =#{id}
   </select>
 </mapper>

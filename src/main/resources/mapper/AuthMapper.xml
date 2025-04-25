@@ -21,7 +21,7 @@
             update_date,
             is_delete
         FROM
-            member
+            MEMBER_TBL
         WHERE
             user_id = #{id}
     </select>
