@@ -1,5 +1,6 @@
 package com.siat.post.domain.board;
 
+import java.sql.SQLException;
 import java.util.List;
 
 import org.springframework.dao.DuplicateKeyException;
@@ -64,5 +65,9 @@ public class BoardService {
 
     public boolean isVaildBoardSlug(String boardSlug){
         return !StringUtils.hasText(boardSlug);
+    }
+
+    public Integer selectBoardIdxByboardSlug(String boardSlug) throws Exception {
+       return boardMapper.selectBoardIdxByboardSlug(boardSlug);
     }
 }

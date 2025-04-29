@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.siat.post.domain.board.BoardMapper;
+import com.siat.post.domain.board.BoardService;
 import com.siat.post.domain.post.dto.Post;
 import com.siat.post.domain.post.dto.PostRequestDto;
 import com.siat.post.domain.post.dto.PostResponseDto;
@@ -21,7 +22,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class PostService {
     private final PostMapper postMapper;
-    private final BoardMapper boardMapper;
+    private final BoardService boardService;
     // 조회수는 중요하지 않은 듯하여 트랜잭션 안 걸음
     public PostResponseDto selectPost(long postIdx) throws Exception {
         Post post = postMapper.selectPost(postIdx);
@@ -33,7 +34,7 @@ public class PostService {
         }
     }
     public List<PostSimpleInfoResponseDto> selectPostsByBoardSlug(String boardSlug) throws Exception{
-        Integer boardIdx= boardMapper.selectBoardIdxByboardSlug(boardSlug);
+        Integer boardIdx= boardService.selectBoardIdxByboardSlug(boardSlug);
         List<PostSimpleInfoResponseDto> postList = postMapper.selectPostsByBoardIdx(boardIdx);
         return postList;
     }
@@ -42,7 +43,7 @@ public class PostService {
         return postList.stream().map(Post::toDto).toList();
     }
     public int insertPostByBoardSlug(PostRequestDto postRequest,String boardSlug) throws Exception{
-        Integer boardIdx= boardMapper.selectBoardIdxByboardSlug(boardSlug);
+        Integer boardIdx= boardService.selectBoardIdxByboardSlug(boardSlug);
         Post post = Post.builder()
                         .boardIdx(boardIdx)
                         .userIdx(postRequest.getUserIdx())
@@ -55,7 +56,7 @@ public class PostService {
         return  postMapper.insertPost(post);
     }
     public int updatePostByBoardSlug(Long postIdx, String boardSlug , PostUpdateRequestDto postUpdateRequest) throws Exception {
-        Integer boardIdx= boardMapper.selectBoardIdxByboardSlug(boardSlug);
+        Integer boardIdx= boardService.selectBoardIdxByboardSlug(boardSlug);
         PostUpdateRequestDto post = PostUpdateRequestDto.builder()
                         .postIdx(postIdx)
                         .boardIdx(boardIdx)
@@ -88,8 +89,5 @@ public class PostService {
         } else {
             return null;
         }
-    }
-    public Integer selectBoardIdxByBoardSlug(String boardSlug) throws Exception{
-        return boardMapper.selectBoardIdxByboardSlug(boardSlug);
     }
 }
