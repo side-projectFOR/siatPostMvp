@@ -5,9 +5,10 @@ spring:
     name: post
   datasource:
     driverClassName: org.h2.Driver
-    url: jdbc:h2:tcp://localhost/~/post
+    url: jdbc:h2:mem:testdb;MODE=MYSQL
     username: sa
     password:
+    schema: classpath:schema.sql
 mybatis:
   configuration:
     map-underscore-to-camel-case: true
