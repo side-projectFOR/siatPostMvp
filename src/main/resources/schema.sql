@@ -111,6 +111,14 @@ INSERT INTO `MEMBER_TBL` (
     'ADMIN'
 );
 
+INSERT INTO BOARD_TBL
+(board_idx, board_name, board_description, board_slug, reg_date, update_date, is_delete)
+VALUES(0, '', NULL, '', current_timestamp(), current_timestamp(), 0);
+
+INSERT INTO POST_TBL
+(post_idx, board_idx, user_idx, post_author, post_title, post_content, hit, is_secret, post_password, reg_date, update_date, is_delete)
+VALUES(0, 0, NULL, '익명', '', NULL, 0, 0, NULL, current_timestamp(), current_timestamp(), 0);
+
 
 
 
