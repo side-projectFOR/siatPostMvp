@@ -3,6 +3,7 @@ package com.siat.post.domain.board;
 import java.sql.SQLException;
 import java.util.List;
 
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
@@ -67,6 +68,7 @@ public class BoardService {
         return !StringUtils.hasText(boardSlug);
     }
 
+    @Cacheable(cacheNames = "board", key = "#boardSlug")
     public Integer selectBoardIdxByboardSlug(String boardSlug) throws Exception {
        return boardMapper.selectBoardIdxByboardSlug(boardSlug);
     }
