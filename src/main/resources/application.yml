@@ -5,9 +5,9 @@ spring:
     name: post
   datasource:
     driverClassName: org.mariadb.jdbc.Driver
-    url: jdbc:mariadb://192.168.100.152:44702/siatpost
-    username: siatdev
-    password: siat9dev
+    url: jdbc:mariadb://${DB_HOST}:${DB_PORT}/${DB_NAME}
+    username: ${DB_USER}
+    password: ${DB_PASS}
 mybatis:
   configuration:
     map-underscore-to-camel-case: true
