@@ -8,7 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
-
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -39,6 +39,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/{boardSlug}/posts")
+@CrossOrigin(origins = "*", allowedHeaders = "*")
 @Tag(name = "PostController", description = "게시판별 게시글CRUD 및 비밀글 인증/조회 API")
 public class PostController {
     private final PostService postService;
