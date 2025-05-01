@@ -8,7 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
-
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -39,6 +39,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/{boardSlug}/posts")
+@CrossOrigin(origins = "*", allowedHeaders = "*")
 @Tag(name = "PostController", description = "게시판별 게시글CRUD 및 비밀글 인증/조회 API")
 public class PostController {
     private final PostService postService;
@@ -165,15 +166,15 @@ public class PostController {
     @ApiResponse(
         responseCode = "200", description = "수정 성공",
         content = @Content(
-            mediaType = "application/json",
+            mediaType = "text/plain",
             examples = @ExampleObject(value = "수정성공")
         )
     )
     @ApiResponse(
         responseCode = "400", description = "잘못된 요청",
         content = @Content(
-            mediaType = "application/json",
-            examples = @ExampleObject(value = "수정실패")
+                mediaType = "text/plain",
+                examples = @ExampleObject(value = "수정실패")
         )
     )
     @PutMapping("/{postIdx}")
@@ -198,18 +199,15 @@ public class PostController {
     @ApiResponse(
     responseCode = "200", description = "성공 시 메시지",
     content = @Content(
-        mediaType = "application/json",
-        examples = @ExampleObject(
-            name = "삭제 성공 예시",
-            value = "삭제성공"
-        )
+            mediaType = "text/plain",
+            examples = @ExampleObject(value = "삭제성공")
         )
     )
     @ApiResponse(
         responseCode = "400", description = "잘못된 요청",
         content = @Content(
-            mediaType = "application/json",
-            examples = @ExampleObject(value = "삭제실패")
+                mediaType = "text/plain",
+                examples = @ExampleObject(value = "삭제실패")
         )
     )
     @DeleteMapping("/{postIdx}")
