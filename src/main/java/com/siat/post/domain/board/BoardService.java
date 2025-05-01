@@ -3,6 +3,7 @@ package com.siat.post.domain.board;
 import java.sql.SQLException;
 import java.util.List;
 
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
@@ -42,24 +43,26 @@ public class BoardService {
         }
         return null;
     }
-
+    @CacheEvict(cacheNames = "board", key="#boardRequest.boardSlug")
     public int insertBoard(BoardRequestDto boardRequest) throws Exception {
-        if(boardMapper.existsByBoardSlug(boardRequest.getBoardSlug())){
+        if (boardMapper.existsByBoardSlug(boardRequest.getBoardSlug())) {
             throw new DuplicateKeyException("boardSlug 중복");
         }
         Board board = Board.builder()
-                        .boardDescription(boardRequest.getBoardDescription())
-                        .boardName(boardRequest.getBoardName())
-                        .boardSlug(boardRequest.getBoardSlug())
-                        .build();
+                .boardDescription(boardRequest.getBoardDescription())
+                .boardName(boardRequest.getBoardName())
+                .boardSlug(boardRequest.getBoardSlug())
+                .build();
         return boardMapper.insertBoard(board);
     }
-
-    public int updateBoardBySlug(String boardSlug,BoardUpdateRequestDto boardUpdateRequest) throws Exception {
+    
+    @CacheEvict(cacheNames = "board")
+    public int updateBoardBySlug(String boardSlug, BoardUpdateRequestDto boardUpdateRequest) throws Exception {
         boardUpdateRequest.setBoardSlug(boardSlug);
         return boardMapper.updateBoardBySlug(boardUpdateRequest);
     }
 
+    @CacheEvict(cacheNames = "board")
     public int softDeleteBoardBySlug(String boardSlug) throws Exception {
         return boardMapper.softDeleteBoardBySlug(boardSlug);
     }
