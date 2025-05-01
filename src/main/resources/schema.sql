@@ -18,7 +18,7 @@ CREATE TABLE `BOARD_TBL` (
 -- siatpost.BOOKMARK_TBL definition
 
 CREATE TABLE `BOOKMARK_TBL` (
-  `bookmark_idx` int(11) NOT NULL,
+  `bookmark_idx` int(11) NOT NULL AUTO_INCREMENT,
   `user_idx` int(11) NOT NULL,
   `post_idx` bigint(20) NOT NULL,
   `reg_date` datetime NOT NULL,
@@ -28,7 +28,7 @@ CREATE TABLE `BOOKMARK_TBL` (
 -- siatpost.COMMENT_TBL definition
 
 CREATE TABLE `COMMENT_TBL` (
-  `comment_idx` bigint(20) NOT NULL,
+  `comment_idx` bigint(20) NOT NULL AUTO_INCREMENT,
   `user_idx` int(11) NOT NULL,
   `post_idx` bigint(20) DEFAULT NULL,
   `comment_parent_idx` bigint(20) DEFAULT NULL,
@@ -43,7 +43,7 @@ CREATE TABLE `COMMENT_TBL` (
 -- siatpost.LIKE_TBL definition
 
 CREATE TABLE `LIKE_TBL` (
-  `like_idx` bigint(20) NOT NULL,
+  `like_idx` bigint(20) NOT NULL AUTO_INCREMENT,
   `user_idx` int(11) NOT NULL,
   `post_idx` bigint(20) NOT NULL,
   `reg_date` datetime NOT NULL,
