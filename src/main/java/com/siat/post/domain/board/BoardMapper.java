@@ -12,14 +12,14 @@ import com.siat.post.domain.board.dto.BoardUpdateRequestDto;
 
 @Mapper
 public interface BoardMapper {
-    List<BoardResponseDto> selectBoards() throws SQLException;
-    BoardResponseDto selectBoardByIdx(Integer boardIdx) throws SQLException;
-    BoardResponseDto selectBoardBySlug(String boardSlug) throws SQLException;
-    Integer selectBoardIdxByboardSlug(String boardSlug) throws SQLException;
-    int insertBoard(Board boardRequest) throws SQLException;
-    int updateBoardByIdx(BoardUpdateRequestDto boardUpdateRequest) throws SQLException;
-    int updateBoardBySlug(BoardUpdateRequestDto boardUpdateRequest) throws SQLException;
-    int softDeleteBoardByIdx(Integer boardIdx) throws SQLException;
-    int softDeleteBoardBySlug(String boardSlug) throws SQLException;
+    List<BoardResponseDto> selectBoards();
+    BoardResponseDto selectBoardByIdx(Integer boardIdx);
+    BoardResponseDto selectBoardBySlug(String boardSlug);
+    Integer selectBoardIdxByboardSlug(String boardSlug);
+    int insertBoard(Board boardRequest);
+    int updateBoardByIdx(BoardUpdateRequestDto boardUpdateRequest);
+    int updateBoardBySlug(BoardUpdateRequestDto boardUpdateRequest);
+    int softDeleteBoardByIdx(Integer boardIdx);
+    int softDeleteBoardBySlug(String boardSlug);
     boolean existsByBoardSlug(@Param("boardSlug") String boardSlug);
 }

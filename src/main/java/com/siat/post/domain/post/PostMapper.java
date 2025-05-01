@@ -13,15 +13,15 @@ import com.siat.post.domain.post.dto.PostUpdateRequestDto;
 
 @Mapper
 public interface PostMapper {
-    public Post selectPost(Long postIdx) throws SQLException;
-    public Post selectPostWithPassword(PostSecretRequestDto post) throws SQLException;
-    public List<Post> selectPosts() throws SQLException;
-    public int insertPost(Post post) throws SQLException;
-    public int updatePost(PostUpdateRequestDto post) throws SQLException;
-    public int softDeletePost(Long post) throws SQLException;
-    public List<PostSimpleInfoResponseDto> selectPostsByBoardIdx(Integer boardIdx) throws SQLException;
-    // public int deletePost(long postIdx)  throws SQLException;
-    public int updatePostHit(Long postIdx) throws SQLException; 
-    public int selectPostIsSecret(Long postIdx) throws SQLException;
+    public Post selectPost(Long postIdx);
+    public Post selectPostWithPassword(PostSecretRequestDto post);
+    public List<Post> selectPosts();
+    public int insertPost(Post post);
+    public int updatePost(PostUpdateRequestDto post);
+    public int softDeletePost(Long post);
+    public List<PostSimpleInfoResponseDto> selectPostsByBoardIdx(Integer boardIdx);
+    // public int deletePost(long postIdx);
+    public int updatePostHit(Long postIdx); 
+    public int selectPostIsSecret(Long postIdx);
 
 }
