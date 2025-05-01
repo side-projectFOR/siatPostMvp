@@ -2,6 +2,7 @@ package com.siat.post.domain.post;
 
 import java.util.List;
 
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
@@ -15,6 +16,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.siat.post.domain.post.dto.LikeInfoDto;
+import com.siat.post.domain.post.dto.LikeRequestDto;
 import com.siat.post.domain.post.dto.PostRequestDto;
 import com.siat.post.domain.post.dto.PostResponseDto;
 import com.siat.post.domain.post.dto.PostSecretRequestDto;
@@ -115,9 +118,10 @@ public class PostController {
         @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "비밀글 인증 요청 정보(password)", required = true)
         @RequestBody PostSecretRequestDto request
     ) throws Exception {
-        if(postIdx==null||request==null){
+        if (postIdx == null || request.getPostPassword() == null) {
             return ResponseEntity.badRequest().build();
         }
+        request.setPostIdx(postIdx);
         PostResponseDto postInfo = postService.selectPostWithPassword(request);
         
         if(postInfo!=null){
@@ -149,9 +153,13 @@ public class PostController {
     public ResponseEntity<String> insertPost(
         @Parameter(description = "게시판 식별자(boardSlug)", example = "free") @PathVariable String boardSlug,
         @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "게시글 작성 정보", required = true)
-        @RequestBody PostRequestDto post
+        @RequestBody PostRequestDto postRequest
     ) throws Exception {
-        int result=postService.insertPostByBoardSlug(post,boardSlug);
+        if (!StringUtils.hasText(boardSlug)) {
+            return ResponseEntity.badRequest().body("작성실패");
+        }
+        postRequest.setBoardSlug(boardSlug);
+        int result=postService.insertPostByBoardSlug(postRequest);
         if(result>0){
             return ResponseEntity.ok().body("작성성공");
         }else{
@@ -184,7 +192,12 @@ public class PostController {
         @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "게시글 수정 정보", required = true)
         @RequestBody PostUpdateRequestDto postUpdateRequest
     ) throws Exception {
-        int result=postService.updatePostByBoardSlug(postIdx,boardSlug,postUpdateRequest);
+        if (postIdx == null || !StringUtils.hasText(boardSlug) || postUpdateRequest == null) {
+            return ResponseEntity.badRequest().body("수정실패");
+        }
+        postUpdateRequest.setBoardSlug(boardSlug);
+        postUpdateRequest.setPostIdx(postIdx);
+        int result=postService.updatePostByBoardSlug(postUpdateRequest);
         if(result>0){
             return ResponseEntity.ok().body("수정성공");
         }else{
@@ -221,6 +234,61 @@ public class PostController {
         }else{
             return ResponseEntity.ok().body("삭제실패");
         }
+    }
+
+    @Operation(
+        summary = "게시글에 좋아요 추가",
+        description = "게시글에 좋아요를 1회만 추가합니다."
+    )
+    @ApiResponse(responseCode = "200", description = "좋아요 성공")
+    @ApiResponse(responseCode = "400", description = "좋아요 실패")
+    @ApiResponse(responseCode = "409", description = "이미 좋아요한 게시글")
+    @PostMapping("/{postIdx}/likes")
+    public ResponseEntity<String> insertLike(@RequestBody LikeRequestDto likeRequestDto) throws Exception {
+        try {
+            int result = postService.insertLike(likeRequestDto);
+            if(result > 0){
+                return ResponseEntity.ok().body("좋아요 성공");
+            } else {
+                return ResponseEntity.badRequest().body("좋아요 실패");
+            }
+        } catch (DuplicateKeyException e) {
+            return ResponseEntity.status(HttpStatus.CONFLICT)
+                    .body(e.getMessage());
+        }
+    }
+
+    @Operation(
+        summary = "게시글 좋아요 삭제",
+        description = "게시글 좋아요를 취소합니다."
+    )
+    @ApiResponse(responseCode = "200", description = "좋아요 삭제 성공")
+    @ApiResponse(responseCode = "400", description = "좋아요 삭제 실패")
+    @DeleteMapping
+    public int deleteLike(@RequestBody LikeRequestDto likeRequestDto) throws Exception {
+        return postService.deleteLike(likeRequestDto);
+    }
+
+    @Operation(
+        summary = "게시글의 좋아요 개수 조회",
+        description = "게시글의 총 좋아요 개수를 조회합니다."
+    )
+    @ApiResponse(responseCode = "200", description = "조회 성공")
+    @ApiResponse(responseCode = "400", description = "조회 실패")
+    @GetMapping("/{postIdx}/likes/count")
+    public int countLikesByPostIdx(@PathVariable Long postIdx) throws Exception {
+        return postService.countLikesByPostIdx(postIdx);
+    }
+
+    @Operation(
+        summary = "게시글의 좋아요 목록 조회",
+        description = "특정 게시글의 모든 좋아요 정보를 조회합니다."
+    )
+    @ApiResponse(responseCode = "200", description = "조회 성공")
+    @ApiResponse(responseCode = "400", description = "조회 실패")
+    @GetMapping("/{postIdx}/likes")
+    public List<LikeInfoDto> selectLikesByPostIdx(@PathVariable Long postIdx) throws Exception {
+        return postService.selectLikesByPostIdx(postIdx);
     }
 }
 

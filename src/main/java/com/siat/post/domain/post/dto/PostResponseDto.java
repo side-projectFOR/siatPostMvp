@@ -33,6 +33,10 @@ public class PostResponseDto {
     private Boolean isSecret;
     @Schema(description = "작성일시", example = "2099-06-11T17:30:00")
     private LocalDateTime regDate;
+    @Schema(description = "좋아요 수", example = "1")
+    private long likeCnt;
+    @Schema(description = "좋아요한 게시글인지", example = "false")
+    private Boolean likedByUser;
     @Schema(description = "수정일시", example = "2099-06-11T18:00:00")
     private LocalDateTime updateDate;
     @Schema(description = "삭제 여부", example = "false")

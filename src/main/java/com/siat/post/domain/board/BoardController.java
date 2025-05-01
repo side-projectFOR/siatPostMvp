@@ -83,10 +83,11 @@ public class BoardController {
     @ApiResponse(responseCode = "200", description = "수정 성공")
     @ApiResponse(responseCode = "400", description = "수정 실패")
     public ResponseEntity<String> updateBoard(@PathVariable String boardSlug, @RequestBody BoardUpdateRequestDto boardUpdateRequest) throws Exception {
-        if(boardService.isVaildBoardSlug(boardSlug)){
+        if (boardService.isVaildBoardSlug(boardSlug)) {
             return ResponseEntity.badRequest().body("요청값 잘못됨");
         }
-        int result = boardService.updateBoardBySlug(boardSlug, boardUpdateRequest);
+        boardUpdateRequest.setBoardSlug(boardSlug);
+        int result = boardService.updateBoardBySlug(boardUpdateRequest);
         if (result > 0) {
             return ResponseEntity.ok().body("게시판 수정 성공");
         } else {

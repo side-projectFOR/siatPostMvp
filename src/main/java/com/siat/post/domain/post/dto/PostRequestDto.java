@@ -17,7 +17,8 @@ import lombok.ToString;
 public class PostRequestDto {
     @Schema(description = "작성자(회원) 고유 인덱스. 비회원일 경우 null", example = "123")
     private Integer userIdx;
-
+    @Schema(hidden = true, description = "게시글 등록할 게시판Slug")
+    private String boardSlug;
     @Schema(description = "작성자 이름 혹은 닉네임",example = "닉네임")
     private String postAuthor;
 

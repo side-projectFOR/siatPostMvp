@@ -38,38 +38,52 @@
     from POST_TBL
     where post_idx = #{postIdx} and is_delete = 0 and post_password=#{postPassword}
   </select>
-  <select id="selectPosts" resultType="com.siat.post.domain.post.dto.PostSimpleInfoResponseDto">
-    select 
-      post_idx 
-      ,board_idx
-      ,user_idx
-      ,post_author
-      ,post_title
-      ,hit
-      ,is_secret
-      ,reg_date
-      ,update_date
-      ,is_delete
-    from POST_TBL
-    where is_delete = 0
-  </select>
+  <select id="selectPosts"
+        resultType="com.siat.post.domain.post.dto.PostSimpleInfoResponseDto">
+  select
+    p.post_idx as postIdx,
+    board_idx,
+    p.user_idx as userIdx,
+    post_author,
+    post_title,
+    hit,
+    is_secret,
+    p.reg_date as regDate,
+    update_date,
+    is_delete,
+    COUNT(like_idx) as "likeCnt",
+    case 
+      when COUNT(like_idx) = 0 then 0
+      else MAX(CASE WHEN l.user_idx = #{userIdx} then 1 else 0 end)
+    end as likedByUser
+  from POST_TBL p
+  left join LIKE_TBL l ON p.post_idx = l.post_idx
+  where is_delete = 0
+  group by p.post_idx, p.board_idx, p.user_idx, p.post_author, p.post_title, p.hit, p.is_secret, p.reg_date, p.update_date, p.is_delete
+  order by p.post_idx desc
+</select>
   <select id="selectPostsByBoardIdx" parameterType="Integer" resultType="com.siat.post.domain.post.dto.PostSimpleInfoResponseDto">
-    select 
-      post_idx 
-      ,board_idx
-      ,user_idx
-      ,post_author
-      ,post_title
-      ,post_content
-      ,hit
-      ,is_secret
-      ,post_password
-      ,reg_date
-      ,update_date
-      ,is_delete
-    from POST_TBL
-    where is_delete = 0 
-    and board_idx = #{boardIdx}
+  select
+    p.post_idx as postIdx,
+    board_idx,
+    p.user_idx as userIdx,
+    post_author,
+    post_title,
+    hit,
+    is_secret,
+    p.reg_date as regDate,
+    update_date,
+    is_delete,
+    COUNT(like_idx) as likeCnt,
+    case 
+      when COUNT(like_idx) = 0 then 0
+      else MAX(CASE WHEN l.user_idx = #{userIdx} then 1 else 0 end)
+    end likedByUser
+  from POST_TBL p
+  left join LIKE_TBL l ON p.post_idx = l.post_idx
+  where is_delete = 0 and board_idx = #{boardIdx}
+  group by p.post_idx, p.board_idx, p.user_idx, p.post_author, p.post_title, p.hit, p.is_secret, p.reg_date, p.update_date, p.is_delete
+  order by p.post_idx desc 
   </select>
   <insert id="insertPost" parameterType="com.siat.post.domain.post.dto.Post" useGeneratedKeys="true" keyProperty="postIdx" keyColumn="post_idx">
     insert into POST_TBL(

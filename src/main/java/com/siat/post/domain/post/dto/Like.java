@@ -7,25 +7,15 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import lombok.ToString;
 
-@Builder
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@ToString
-public class PostSimpleInfoResponseDto {
+@Builder
+public class Like {
+    private Long likeIdx;
     private Long postIdx;
-    private Integer boardIdx;
     private Integer userIdx;
-    private String postAuthor;
-    private String postTitle;
-    private int hit;
-    private Boolean isSecret;
     private LocalDateTime regDate;
-    private LocalDateTime updateDate;
-    private long likeCnt;
-    private Boolean likedByUser;
-    private Boolean isDelete;
 }

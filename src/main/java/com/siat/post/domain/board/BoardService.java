@@ -57,8 +57,7 @@ public class BoardService {
     }
     
     @CacheEvict(cacheNames = "board")
-    public int updateBoardBySlug(String boardSlug, BoardUpdateRequestDto boardUpdateRequest) throws Exception {
-        boardUpdateRequest.setBoardSlug(boardSlug);
+    public int updateBoardBySlug(BoardUpdateRequestDto boardUpdateRequest) throws Exception {
         return boardMapper.updateBoardBySlug(boardUpdateRequest);
     }
 

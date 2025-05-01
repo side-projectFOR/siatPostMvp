@@ -2,19 +2,22 @@ package com.siat.post.domain.post.dto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.media.Schema.RequiredMode;
-import jakarta.annotation.Nullable;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
+
 
 @Getter
 @Setter
-@NoArgsConstructor
+@ToString
+@Builder
 @AllArgsConstructor
-public class PostSecretRequestDto {
-    @Schema(description = "비밀글 비밀번호")
-    private String postPassword;
-    @Schema(description = "게시글 고유 인덱스", example = "1",hidden = true,requiredMode = RequiredMode.NOT_REQUIRED )
+@NoArgsConstructor
+public class LikeRequestDto {
     private Long postIdx;
+    @Schema(requiredMode = RequiredMode.AUTO)
+    private Integer userIdx;
 }
