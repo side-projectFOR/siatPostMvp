@@ -167,14 +167,14 @@ public class PostController {
         responseCode = "200", description = "수정 성공",
         content = @Content(
             mediaType = "application/json",
-            examples = @ExampleObject(value = "수정성공")
+            examples = @ExampleObject(value = "{\"message\": \"수정성공\"}")
         )
     )
     @ApiResponse(
         responseCode = "400", description = "잘못된 요청",
         content = @Content(
             mediaType = "application/json",
-            examples = @ExampleObject(value = "수정실패")
+            examples = @ExampleObject(value = "{\"message\": \"수정실패\"}")
         )
     )
     @PutMapping("/{postIdx}")
@@ -200,17 +200,14 @@ public class PostController {
     responseCode = "200", description = "성공 시 메시지",
     content = @Content(
         mediaType = "application/json",
-        examples = @ExampleObject(
-            name = "삭제 성공 예시",
-            value = "삭제성공"
-        )
+        examples = @ExampleObject(value = "{\"message\": \"삭제성공\"}")
         )
     )
     @ApiResponse(
         responseCode = "400", description = "잘못된 요청",
         content = @Content(
             mediaType = "application/json",
-            examples = @ExampleObject(value = "삭제실패")
+            examples = @ExampleObject(value = "{\"message\": \"삭제실패\"}")
         )
     )
     @DeleteMapping("/{postIdx}")
