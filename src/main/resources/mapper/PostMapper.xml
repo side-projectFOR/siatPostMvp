@@ -109,7 +109,7 @@
         post_content = #{postContent},
         </if>
         <if test="isSecret != null">
-        is_secrect = #{isSecret},
+        is_secret = #{isSecret},
         </if>
         <if test="postPassword != null">
         post_password = #{postPassword},
@@ -120,7 +120,7 @@
   </update>
   <update id="softDeletePost" parameterType="Long">
     update POST_TBL
-      is_delete = 1,
+    set is_delete = 1
     where post_idx = #{postIdx}
   </update>
   <update id="updatePostHit" parameterType="Long">
