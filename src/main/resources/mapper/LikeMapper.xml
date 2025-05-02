@@ -33,7 +33,7 @@
         FROM LIKE_TBL
         WHERE post_idx = #{postIdx}
     </select>
-    <select id="selecAllLikeByPost" resultType="com.siat.post.domain.post.dto.LikeInfoDto">
+    <select id="selectAllLikeByPost" resultType="com.siat.post.domain.post.dto.LikeInfoDto">
         SELECT like_idx, post_idx, user_idx, reg_date
         FROM LIKE_TBL
         <where>

@@ -20,7 +20,7 @@ public interface LikeMapper {
 
     public List<LikeInfoDto> selectLikeByPostIdx(Long postIdx);
 
-    public List<LikeInfoDto> selecAllLikeByPost(List<Long> postIdxList);
+    public List<LikeInfoDto> selectAllLikeByPost(List<Long> postIdxList);
 
     public int countLikeByPostIdx(Long postIdx);
 }
