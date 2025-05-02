@@ -34,6 +34,7 @@ public class CommentInsertRequestDto {
     public Comment toEntity() {
         return Comment.builder()
                 .userIdx(this.userIdx)
+                .postIdx(this.postIdx)
                 .commentParentIdx(this.commentParentIdx)
                 .commentContent(this.commentContent)
                 .commentAuthor(this.commentAuthor)

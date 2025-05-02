@@ -19,4 +19,26 @@
         )
     </insert>
 
+    <select id="selectComments"
+            resultType="com.siat.post.domain.comment.dto.CommentSelectResponseDto">
+        SELECT
+            comment_idx AS commentIdx,
+            user_idx AS userIdx,
+            post_idx AS postIdx,
+            comment_parent_idx AS commentParentIdx,
+            comment_content AS commentContent,
+            comment_author AS commentAuthor,
+            reg_date AS regDate,
+            update_date AS updateDate,
+            is_delete AS isDelete
+        FROM
+            COMMENT_TBL
+        WHERE
+            post_idx = #{postIdx}
+        AND
+            is_delete = 0
+        ORDER BY
+            comment_parent_idx ASC, reg_date ASC
+    </select>
+
 </mapper>

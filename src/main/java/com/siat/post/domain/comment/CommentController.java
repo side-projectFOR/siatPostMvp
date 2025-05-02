@@ -1,6 +1,8 @@
 package com.siat.post.domain.comment;
 
 import com.siat.post.domain.comment.dto.CommentInsertRequestDto;
+import com.siat.post.domain.comment.dto.CommentSelectResponseDto;
+import com.siat.post.domain.post.dto.PostSimpleInfoResponseDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -9,7 +11,10 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -54,5 +59,26 @@ public class CommentController {
         }
     }
 
+    @Operation(
+            summary = "게시글별 댓글 목록 조회",
+            description = "특정 게시글의 모든 댓글 목록을 조회합니다."
+    )
+    @ApiResponse(responseCode = "200", description = "댓글 목록 조회 성공")
+    @ApiResponse(responseCode = "400", description = "잘못된 요청")
+    @GetMapping
+    public ResponseEntity<List<CommentSelectResponseDto>> selectComments(
+            @Parameter(description = "작성글 idx", example = "1") @PathVariable Long postIdx
+    ) throws Exception {
+        if (postIdx == null) {
+            return ResponseEntity.badRequest().build();
+        }
+        List<CommentSelectResponseDto> commentList = commentService.selectComments(postIdx);
+
+        if (commentList != null) {
+            return ResponseEntity.ok().body(commentList);
+        } else {
+            return ResponseEntity.badRequest().build();
+        }
+    }
 
 }
