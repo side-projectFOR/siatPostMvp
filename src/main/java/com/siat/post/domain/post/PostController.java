@@ -134,14 +134,14 @@ public class PostController {
     @ApiResponse(
         responseCode = "200", description = "작성 성공",
         content = @Content(
-            mediaType = "application/json",
+            mediaType = "text/plain",
             examples = @ExampleObject(value = "작성성공")
         )
     )
     @ApiResponse(
         responseCode = "400", description = "잘못된 요청(예: 입력값 누락 등)",
         content = @Content(
-            mediaType = "application/json",
+            mediaType = "text/plain",
             examples = @ExampleObject(value = "작성실패")
         )
     )
