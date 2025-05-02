@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.siat.post.domain.comment.CommentMapper">
+    <insert id="insertComment" parameterType="com.siat.post.domain.comment.Comment" useGeneratedKeys="true" keyProperty="commentIdx" keyColumn="comment_idx">
+        INSERT INTO COMMENT_TBL (
+            user_idx,
+            post_idx,
+            comment_parent_idx,
+            comment_content,
+            comment_author
+        ) VALUES (
+            #{userIdx},
+            #{postIdx},
+            #{commentParentIdx},
+            #{commentContent},
+            #{commentAuthor}
+        )
+    </insert>
+
+</mapper>
