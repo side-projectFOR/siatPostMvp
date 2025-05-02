@@ -41,4 +41,21 @@
             comment_parent_idx ASC, reg_date ASC
     </select>
 
+    <update id="updateComment" parameterType="com.siat.post.domain.comment.dto.CommentUpdateRequestDto">
+        update COMMENT_TBL
+        <set>
+            <if test="commentContent != null">
+                comment_content = #{commentContent},
+            </if>
+            update_date = CURRENT_TIMESTAMP,
+        </set>
+        where comment_idx = #{commentIdx}
+    </update>
+
+    <update id="softDeleteComment" parameterType="Long">
+        update COMMENT_TBL
+        set is_delete = 1
+        where comment_idx = #{commentIdx}
+    </update>
+
 </mapper>

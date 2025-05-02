@@ -2,7 +2,9 @@ package com.siat.post.domain.comment;
 
 import com.siat.post.domain.comment.dto.CommentInsertRequestDto;
 import com.siat.post.domain.comment.dto.CommentSelectResponseDto;
+import com.siat.post.domain.comment.dto.CommentUpdateRequestDto;
 import com.siat.post.domain.post.dto.PostSimpleInfoResponseDto;
+import com.siat.post.domain.post.dto.PostUpdateRequestDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -78,6 +80,71 @@ public class CommentController {
             return ResponseEntity.ok().body(commentList);
         } else {
             return ResponseEntity.badRequest().build();
+        }
+    }
+
+    @Operation(
+            summary = "댓글 수정",
+            description = "기존 댓글을 수정합니다."
+    )
+    @ApiResponse(
+            responseCode = "200", description = "수정 성공",
+            content = @Content(
+                    mediaType = "text/plain",
+                    examples = @ExampleObject(value = "수정성공")
+            )
+    )
+    @ApiResponse(
+            responseCode = "400", description = "잘못된 요청",
+            content = @Content(
+                    mediaType = "text/plain",
+                    examples = @ExampleObject(value = "수정실패")
+            )
+    )
+    @PutMapping("/{commentIdx}")
+    public ResponseEntity<String> updatePost(
+            @Parameter(description = "댓글 인덱스", example = "1") @PathVariable Long commentIdx,
+            @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "댓글 수정 정보", required = true)
+            @RequestBody CommentUpdateRequestDto commentUpdateRequestDto
+    ) throws Exception {
+        if (commentIdx == null || commentUpdateRequestDto == null) {
+            return ResponseEntity.badRequest().body("수정실패");
+        }
+        int result = commentService.updateComment(commentIdx, commentUpdateRequestDto);
+        if(result>0){
+            return ResponseEntity.ok().body("수정성공");
+        }else{
+            return ResponseEntity.badRequest().body("수정실패");
+        }
+    }
+
+    @Operation(
+            summary = "댓글 삭제",
+            description = "해당 댓글을 삭제합니다."
+    )
+    @ApiResponse(
+            responseCode = "200", description = "성공 시 메시지",
+            content = @Content(
+                    mediaType = "text/plain",
+                    examples = @ExampleObject(value = "삭제성공")
+            )
+    )
+    @ApiResponse(
+            responseCode = "400", description = "잘못된 요청",
+            content = @Content(
+                    mediaType = "text/plain",
+                    examples = @ExampleObject(value = "삭제실패")
+            )
+    )
+    @DeleteMapping("/{commentIdx}")
+    public ResponseEntity<String> deletePost(
+            @Parameter(description = "게시글 인덱스", example = "1") @PathVariable Long commentIdx
+    ) throws Exception {
+        int result = commentService.softDeleteComment(commentIdx);
+        if(result>0){
+            return ResponseEntity.ok().body("삭제성공");
+        }else{
+            return ResponseEntity.ok().body("삭제실패");
         }
     }
 
