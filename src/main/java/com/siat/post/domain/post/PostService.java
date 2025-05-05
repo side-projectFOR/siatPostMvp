@@ -9,6 +9,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.siat.post.domain.board.BoardService;
+import com.siat.post.domain.post.dto.Bookmark;
+import com.siat.post.domain.post.dto.BookmarkRequestDto;
 import com.siat.post.domain.post.dto.Like;
 import com.siat.post.domain.post.dto.LikeInfoDto;
 import com.siat.post.domain.post.dto.LikeRequestDto;
@@ -29,6 +31,8 @@ public class PostService {
     private final PostMapper postMapper;
     private final BoardService boardService;
     private final LikeMapper likeMapper;
+    private final BookmarkMapper bookmarkMapper ;
+
     // 조회수는 중요하지 않은 듯하여 트랜잭션 안 걸음
     public PostResponseDto selectPost(long postIdx) throws Exception {
         Post post = postMapper.selectPost(postIdx);
@@ -125,5 +129,22 @@ public class PostService {
 
     public int countLikesByPostIdx(Long postIdx) throws Exception {
         return likeMapper.countLikeByPostIdx(postIdx);
+    }
+
+
+    @Transactional
+    public int insertBookmark(BookmarkRequestDto request) throws Exception {
+        if (bookmarkMapper.existsBookmark(request)) {
+            throw new DuplicateKeyException("이미 북마크한한 게시글입니다.");
+        }
+        Bookmark bookmark= Bookmark.builder()
+                    .userIdx(request.getUserIdx())
+                    .postIdx(request.getPostIdx())
+                    .build();
+        return bookmarkMapper.insertBookmark(bookmark);
+    }
+    public int deleteBookmark(BookmarkRequestDto request) throws Exception {
+        return bookmarkMapper.deleteBookmark(request) ;
+
     }
 }

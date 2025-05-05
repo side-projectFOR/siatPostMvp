@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.siat.post.domain.post.dto.BookmarkRequestDto;
 import com.siat.post.domain.post.dto.LikeInfoDto;
 import com.siat.post.domain.post.dto.LikeRequestDto;
 import com.siat.post.domain.post.dto.PostRequestDto;
@@ -290,5 +291,46 @@ public class PostController {
     public List<LikeInfoDto> selectLikesByPostIdx(@PathVariable Long postIdx) throws Exception {
         return postService.selectLikesByPostIdx(postIdx);
     }
+
+    ///////////////////// 여명 part
+    /// 
+    /// 북마크 추가
+    /// 
+    @Operation(
+        summary = "게시글을 북마크로 추가",
+        description = "특정 게시글을 북마크합니다."
+    )
+    @ApiResponse(responseCode = "200", description = "북마크 성공")
+    @ApiResponse(responseCode = "400", description = "북마크 실패")
+    @ApiResponse(responseCode = "409", description = "이미 북마크한 게시글")
+    @PostMapping("/{postIdx}/bookmark")
+    public ResponseEntity<String> insertbookmark(@RequestBody BookmarkRequestDto bookmarkRequestDto) throws Exception {
+        try {
+            // 성공하면 1, 실패하면 다른 숫자
+            int result = postService.insertBookmark(bookmarkRequestDto);
+            if(result > 0){
+                return ResponseEntity.ok().body("좋아요 성공");
+            } else {
+                return ResponseEntity.badRequest().body("좋아요 실패");
+            }
+        } catch (DuplicateKeyException e) {
+            return ResponseEntity.status(HttpStatus.CONFLICT)
+                    .body(e.getMessage());
+        }
+    }
+
+    @Operation(
+        summary = "게시글 북마크 삭제",
+        description = "게시글 북마크를 취소합니다."
+    )
+    @ApiResponse(responseCode = "200", description = "북마크 삭제 성공")
+    @ApiResponse(responseCode = "400", description = "북마크 삭제 실패")
+    @DeleteMapping("/{postIdx}/bookmark")
+    public int deleteBookmark(@RequestBody BookmarkRequestDto bookmarkRequestDto) throws Exception {
+        return postService.deleteBookmark(bookmarkRequestDto);
+    }
+
+    // // 유저별 북마크 목록 보기 - 이거는 천천히 생각하기
+    
 }
 

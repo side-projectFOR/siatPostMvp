@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.siat.post.domain.post.BookmarkMapper">
+  <insert id = "insertBookmark" parameterType="com.siat.post.domain.post.dto.BookmarkRequestDto">
+    INSERT INTO BOOKMARK_TBL (post_idx, user_idx, reg_date)
+    VALUES (#{postIdx}, #{userIdx}, now())
+  </insert>
+
+  <select id = "existsBookmark" parameterType="com.siat.post.domain.post.dto.Bookmark" resultType="boolean">
+    SELECT EXISTS (
+            SELECT 1 FROM BOOKMARK_TBL
+            WHERE post_idx = #{postIdx} AND user_idx = #{userIdx}
+        )
+  </select>
+
+  <delete id = "deleteBookmark" parameterType="com.siat.post.domain.post.dto.BookmarkRequestDto">
+    DELETE FROM BOOKMARK_TBL WHERE post_idx = #{postIdx} AND user_idx = #{userIdx}
+  </delete>
+</mapper>
